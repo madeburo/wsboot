@@ -45,7 +45,7 @@ export type WindowComponentProps = {
   closeWindow: (instanceId: string) => void;
   notify: (message: string) => void;
   playSound: (sound: string) => void;
-  startScreensaver: (mode?: "logos" | "pipes" | "stars") => void;
+  startScreensaver: (mode?: "pipes" | "stars") => void;
 };
 
 export const windowDefinitions: Record<WindowId, WindowDefinition> = {
@@ -81,22 +81,19 @@ export type DesktopIconDefinition = {
 
 export const desktopIcons: DesktopIconDefinition[] = [
   { id: "computer", label: "My Computer", icon: "computer", windowId: "computer" },
-  { id: "winamp", label: "Winamp", icon: "winamp", windowId: "music" },
+  { id: "internet", label: "Internet Explorer", icon: "ie", windowId: "contact" },
   { id: "documents", label: "My Documents", icon: "documents", windowId: "projects" },
-  { id: "pipes", label: "3D Pipes", icon: "pipes", windowId: "screensaver" },
-  { id: "network", label: "Network Neighborhood", icon: "network", windowId: "norton" },
-  { id: "flower-box", label: "3D Flower Box", icon: "pipes", windowId: "screensaver" },
+  { id: "winamp", label: "Winamp", icon: "winamp", windowId: "music" },
   { id: "recycle", label: "Recycle Bin", icon: "trash", message: "Recycle Bin is empty. Very responsible." },
   { id: "prompt", label: "MS-DOS Prompt", icon: "prompt", windowId: "run" },
-  { id: "pictures", label: "My Pictures", icon: "folder", windowId: "projects" },
+  { id: "paint", label: "Paint", icon: "paint", windowId: "paint" },
+  { id: "doom", label: "Doom", icon: "doom", windowId: "games" },
   { id: "calculator", label: "Calculator", icon: "calculator", message: "Calculator says 98 + vibes = WSBoot." },
+  { id: "pictures", label: "My Pictures", icon: "folder", windowId: "projects" },
   { id: "themes", label: "Themes", icon: "folder", windowId: "settings" },
   { id: "pinball", label: "Pinball", icon: "pinball", windowId: "games" },
   { id: "credits", label: "CREDITS.txt", icon: "notepad", windowId: "about" },
-  { id: "internet", label: "Internet Explorer", icon: "ie", windowId: "contact" },
-  { id: "paint", label: "Paint", icon: "paint", windowId: "paint" },
   { id: "minesweeper", label: "Minesweeper", icon: "mine", windowId: "games" },
-  { id: "sound", label: "Sound Recorder", icon: "recorder", message: "Sound Recorder captured a nostalgic click." },
   { id: "solitaire", label: "Solitaire", icon: "cards", windowId: "games" },
   { id: "notepad", label: "Notepad", icon: "notepad", windowId: "about" },
 ];

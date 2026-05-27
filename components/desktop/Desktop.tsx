@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BootScreen } from "@/components/boot/BootScreen";
 import { ContextMenu } from "./ContextMenu";
 import { DesktopIcon } from "./DesktopIcon";
@@ -29,6 +29,89 @@ import { useWindowManager } from "@/hooks/useWindowManager";
 import { desktopIcons, WindowComponentProps, WindowId } from "@/lib/windows";
 
 type MenuState = { x: number; y: number; target?: string } | null;
+type IconPosition = { x: number; y: number };
+type IconDrag = {
+  id: string;
+  startX: number;
+  startY: number;
+  originX: number;
+  originY: number;
+  moved: boolean;
+} | null;
+
+const ICON_WIDTH = 75;
+const ICON_HEIGHT = 68;
+const ICON_COLUMN_GAP = 4;
+const ICON_ROW_GAP = 4;
+const ICON_STEP_X = ICON_WIDTH + ICON_COLUMN_GAP;
+const ICON_STEP_Y = ICON_HEIGHT + ICON_ROW_GAP;
+const DESKTOP_PADDING = 6;
+const TASKBAR_HEIGHT = 28;
+
+function initialIconPositions() {
+  return iconGridPositions(desktopIcons.map((icon) => icon.id));
+}
+
+function iconGridPositions(ids: string[]) {
+  const availableHeight = typeof window === "undefined" ? 740 : window.innerHeight - TASKBAR_HEIGHT - DESKTOP_PADDING * 2;
+  const rows = Math.max(1, Math.floor(availableHeight / ICON_STEP_Y));
+  return Object.fromEntries(
+    ids.map((id, index) => {
+      const column = Math.floor(index / rows);
+      const row = index % rows;
+      return [
+        id,
+        {
+          x: DESKTOP_PADDING + column * ICON_STEP_X,
+          y: DESKTOP_PADDING + row * ICON_STEP_Y,
+        },
+      ];
+    }),
+  ) as Record<string, IconPosition>;
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function cellKey(column: number, row: number) {
+  return `${column}:${row}`;
+}
+
+function nearestFreeGridPosition(id: string, x: number, y: number, positions: Record<string, IconPosition>) {
+  const maxRows = Math.max(1, Math.floor((window.innerHeight - TASKBAR_HEIGHT - DESKTOP_PADDING * 2) / ICON_STEP_Y));
+  const maxColumns = Math.max(1, Math.floor((window.innerWidth - DESKTOP_PADDING * 2) / ICON_STEP_X));
+  const targetColumn = clamp(Math.round((x - DESKTOP_PADDING) / ICON_STEP_X), 0, maxColumns - 1);
+  const targetRow = clamp(Math.round((y - DESKTOP_PADDING) / ICON_STEP_Y), 0, maxRows - 1);
+  const occupied = new Set<string>();
+
+  Object.entries(positions).forEach(([otherId, position]) => {
+    if (otherId === id) return;
+    const column = clamp(Math.round((position.x - DESKTOP_PADDING) / ICON_STEP_X), 0, maxColumns - 1);
+    const row = clamp(Math.round((position.y - DESKTOP_PADDING) / ICON_STEP_Y), 0, maxRows - 1);
+    occupied.add(cellKey(column, row));
+  });
+
+  for (let radius = 0; radius <= Math.max(maxRows, maxColumns); radius += 1) {
+    for (let column = targetColumn - radius; column <= targetColumn + radius; column += 1) {
+      for (let row = targetRow - radius; row <= targetRow + radius; row += 1) {
+        if (column < 0 || row < 0 || column >= maxColumns || row >= maxRows) continue;
+        if (Math.max(Math.abs(column - targetColumn), Math.abs(row - targetRow)) !== radius) continue;
+        if (!occupied.has(cellKey(column, row))) {
+          return {
+            x: DESKTOP_PADDING + column * ICON_STEP_X,
+            y: DESKTOP_PADDING + row * ICON_STEP_Y,
+          };
+        }
+      }
+    }
+  }
+
+  return {
+    x: DESKTOP_PADDING + targetColumn * ICON_STEP_X,
+    y: DESKTOP_PADDING + targetRow * ICON_STEP_Y,
+  };
+}
 
 export default function Desktop() {
   const [booted, setBooted] = useState(false);
@@ -38,6 +121,8 @@ export default function Desktop() {
   const [notification, setNotification] = useState<string | null>(null);
   const [shutdownOpen, setShutdownOpen] = useState(false);
   const [safeToTurnOff, setSafeToTurnOff] = useState(false);
+  const [iconPositions, setIconPositions] = useState<Record<string, IconPosition>>(() => initialIconPositions());
+  const iconDrag = useRef<IconDrag>(null);
   const wm = useWindowManager();
   const { playSound, muted, setMuted } = useSound();
   const screensaver = useScreensaver(60000);
@@ -73,6 +158,78 @@ export default function Desktop() {
       else notify(icon?.message ?? "Shortcut is resting on the desktop.");
     },
   );
+
+  const moveIcon = useCallback((event: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = iconDrag.current;
+    if (!drag) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (!drag.moved && Math.hypot(dx, dy) > 4) {
+      drag.moved = true;
+    }
+    if (!drag.moved) return;
+    setIconPositions((positions) => ({
+      ...positions,
+      [drag.id]: {
+        x: clamp(drag.originX + dx, 0, window.innerWidth - ICON_WIDTH),
+        y: clamp(drag.originY + dy, 0, window.innerHeight - TASKBAR_HEIGHT - ICON_HEIGHT),
+      },
+    }));
+  }, []);
+
+  const releaseIcon = useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      const drag = iconDrag.current;
+      if (!drag) return;
+      event.currentTarget.releasePointerCapture(event.pointerId);
+      iconDrag.current = null;
+      if (!drag.moved) {
+        iconClick(drag.id);
+      } else {
+        setIconPositions((positions) => ({
+          ...positions,
+          [drag.id]: nearestFreeGridPosition(drag.id, positions[drag.id]?.x ?? drag.originX, positions[drag.id]?.y ?? drag.originY, positions),
+        }));
+        playSound("click");
+      }
+    },
+    [iconClick, playSound],
+  );
+
+  const arrangeIcons = useCallback(() => {
+    setIconPositions(initialIconPositions());
+    setContextMenu(null);
+    playSound("click");
+  }, [playSound]);
+
+  const lineUpIcons = useCallback(() => {
+    const orderedIds = desktopIcons
+      .map((icon) => icon.id)
+      .sort((a, b) => {
+        const aPosition = iconPositions[a] ?? { x: 0, y: 0 };
+        const bPosition = iconPositions[b] ?? { x: 0, y: 0 };
+        return aPosition.x - bPosition.x || aPosition.y - bPosition.y;
+      });
+    setIconPositions(iconGridPositions(orderedIds));
+    setContextMenu(null);
+    playSound("click");
+  }, [iconPositions, playSound]);
+
+  const refreshDesktop = useCallback(() => {
+    setContextMenu(null);
+    setSelectedIcon(null);
+    notify("Desktop refreshed.");
+  }, [notify]);
+
+  const showProperties = useCallback(() => {
+    if (contextMenu?.target) {
+      const icon = desktopIcons.find((item) => item.id === contextMenu.target);
+      notify(`${icon?.label ?? "Shortcut"} properties are not installed.`);
+    } else {
+      openWindow("settings");
+    }
+    setContextMenu(null);
+  }, [contextMenu, notify, openWindow]);
 
   const renderWindow = (props: WindowComponentProps) => {
     switch (props.window.id) {
@@ -161,8 +318,7 @@ export default function Desktop() {
         setContextMenu({ x: event.clientX, y: event.clientY });
       }}
     >
-      {/* Desktop icons grid */}
-      <div className="flex h-[calc(100vh-28px)] w-[172px] flex-col flex-wrap content-start gap-x-[2px] gap-y-[5px] p-[2px]">
+      <div className="relative h-[calc(100vh-28px)]">
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}
@@ -170,7 +326,28 @@ export default function Desktop() {
             label={icon.label}
             icon={icon.icon}
             selected={selectedIcon === icon.id}
-            onClick={() => iconClick(icon.id)}
+            x={iconPositions[icon.id]?.x ?? DESKTOP_PADDING}
+            y={iconPositions[icon.id]?.y ?? DESKTOP_PADDING}
+            onPointerDown={(event) => {
+              if (event.button !== 0) return;
+              event.preventDefault();
+              event.stopPropagation();
+              setContextMenu(null);
+              setStartOpen(false);
+              setSelectedIcon(icon.id);
+              const position = iconPositions[icon.id] ?? { x: DESKTOP_PADDING, y: DESKTOP_PADDING };
+              iconDrag.current = {
+                id: icon.id,
+                startX: event.clientX,
+                startY: event.clientY,
+                originX: position.x,
+                originY: position.y,
+                moved: false,
+              };
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerMove={moveIcon}
+            onPointerUp={releaseIcon}
             onContextMenu={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -205,7 +382,7 @@ export default function Desktop() {
           onOpen={openWindow}
           onScreensaver={() => {
             setStartOpen(false);
-            screensaver.start("logos");
+            screensaver.start("stars");
           }}
           onShutdown={() => {
             setStartOpen(false);
@@ -227,6 +404,10 @@ export default function Desktop() {
               notify(icon?.message ?? "Desktop properties are feeling nostalgic.");
             }
           }}
+          onArrangeIcons={arrangeIcons}
+          onLineUpIcons={lineUpIcons}
+          onRefresh={refreshDesktop}
+          onProperties={showProperties}
           onClose={() => setContextMenu(null)}
         />
       )}

@@ -3,7 +3,7 @@
 import type { WindowComponentProps } from "@/lib/windows";
 
 const leftFiles = ["AUTOEXEC.BAT", "COMMAND.COM", "CONFIG.SYS", "DOOM", "GAMES", "README.TXT", "WINAMP"];
-const rightFiles = ["ABOUT.TXT", "CONTACT.CRD", "PROJECTS", "SETUP.EXE", "SYSTEM", "TEMP", "WINDOWS"];
+const rightFiles = ["ABOUT.TXT", "CONTACT.CRD", "PROJECTS", "SETUP.EXE", "SYSTEM", "TEMP", "WSBOOT"];
 
 function Panel({ drive, files, active }: { drive: string; files: string[]; active?: boolean }) {
   return (

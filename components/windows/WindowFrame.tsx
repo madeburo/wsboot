@@ -26,10 +26,13 @@ export function WindowFrame({ window, active, children, onFocus, onClose, onMini
 
   return (
     <div
-      className={`fixed flex flex-col bg-[#c0c0c0] ${window.minimized ? "hidden" : ""}`}
+      className={`fixed flex flex-col ${window.minimized ? "hidden" : ""}`}
       style={{
         ...style,
-        boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf",
+        background: "#c0c0c0",
+        boxShadow: active
+          ? "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
+          : "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf",
         padding: "3px",
       }}
       onPointerDown={onFocus}
@@ -39,10 +42,9 @@ export function WindowFrame({ window, active, children, onFocus, onClose, onMini
           return;
         }
         if (resize.current) {
-          onResize(
-            resize.current.width + event.clientX - resize.current.x,
-            resize.current.height + event.clientY - resize.current.y,
-          );
+          const newWidth = Math.max(200, resize.current.width + event.clientX - resize.current.x);
+          const newHeight = Math.max(100, resize.current.height + event.clientY - resize.current.y);
+          onResize(newWidth, newHeight);
         }
       }}
       onPointerUp={() => {
@@ -65,26 +67,29 @@ export function WindowFrame({ window, active, children, onFocus, onClose, onMini
           event.currentTarget.setPointerCapture(event.pointerId);
         }}
       />
-      <div
-        className="min-h-0 flex-1 overflow-auto bg-[#c0c0c0] mt-[2px]"
-      >
+      {/* Window body */}
+      <div className="min-h-0 flex-1 overflow-auto bg-[#c0c0c0] mt-[1px] p-[4px]">
         {children}
       </div>
+
+      {/* Resize grip */}
       {!window.maximized && (
-        <button
-          className="absolute bottom-[3px] right-[3px] h-[14px] w-[14px] cursor-se-resize"
-          style={{
-            background:
-              "repeating-linear-gradient(135deg, transparent 0 3px, #808080 3px 4px, #ffffff 4px 5px)",
-          }}
-          aria-label="Resize window"
+        <div
+          className="absolute bottom-0 right-0 h-[16px] w-[16px] cursor-se-resize"
           onPointerDown={(event) => {
             event.stopPropagation();
             onFocus();
             resize.current = { x: event.clientX, y: event.clientY, width: window.width, height: window.height };
-            event.currentTarget.setPointerCapture(event.pointerId);
+            (event.target as HTMLElement).setPointerCapture(event.pointerId);
           }}
-        />
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="absolute bottom-0 right-0">
+            <path d="M14 4V14H4" stroke="#fff" strokeWidth="1"/>
+            <path d="M14 7V14H7" stroke="#808080" strokeWidth="1"/>
+            <path d="M14 10V14H10" stroke="#fff" strokeWidth="1"/>
+            <path d="M14 13V14H13" stroke="#808080" strokeWidth="1"/>
+          </svg>
+        </div>
       )}
     </div>
   );

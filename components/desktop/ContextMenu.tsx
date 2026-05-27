@@ -5,10 +5,24 @@ type Props = {
   y: number;
   target?: string;
   onOpen: () => void;
+  onArrangeIcons: () => void;
+  onLineUpIcons: () => void;
+  onRefresh: () => void;
+  onProperties: () => void;
   onClose: () => void;
 };
 
-export function ContextMenu({ x, y, target, onOpen, onClose }: Props) {
+export function ContextMenu({
+  x,
+  y,
+  target,
+  onOpen,
+  onArrangeIcons,
+  onLineUpIcons,
+  onRefresh,
+  onProperties,
+  onClose,
+}: Props) {
   return (
     <div
       className="fixed z-[5000] min-w-[160px] bg-[#c0c0c0] py-[2px]"
@@ -30,11 +44,14 @@ export function ContextMenu({ x, y, target, onOpen, onClose }: Props) {
       )}
       {!target && (
         <>
-          <button className="menu-command" onClick={onClose}>
+          <button className="menu-command" onClick={onArrangeIcons}>
             Arrange Icons
           </button>
-          <button className="menu-command" onClick={onClose}>
+          <button className="menu-command" onClick={onLineUpIcons}>
             Line up Icons
+          </button>
+          <button className="menu-command" onClick={onRefresh}>
+            Refresh
           </button>
           <div className="mx-[2px] h-[1px] bg-[#808080] shadow-[0_1px_0_#fff]" />
           <button className="menu-command" aria-disabled="true">
@@ -50,7 +67,7 @@ export function ContextMenu({ x, y, target, onOpen, onClose }: Props) {
           <div className="mx-[2px] h-[1px] bg-[#808080] shadow-[0_1px_0_#fff]" />
         </>
       )}
-      <button className="menu-command" onClick={onClose}>
+      <button className="menu-command" onClick={onProperties}>
         Properties
       </button>
     </div>

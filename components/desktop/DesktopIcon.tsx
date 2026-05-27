@@ -7,25 +7,40 @@ type Props = {
   label: string;
   icon: string;
   selected: boolean;
-  onClick: () => void;
+  x: number;
+  y: number;
+  onPointerDown: (event: React.PointerEvent<HTMLButtonElement>) => void;
+  onPointerMove: (event: React.PointerEvent<HTMLButtonElement>) => void;
+  onPointerUp: (event: React.PointerEvent<HTMLButtonElement>) => void;
   onContextMenu: (event: React.MouseEvent) => void;
 };
 
-export function DesktopIcon({ label, icon, selected, onClick, onContextMenu }: Props) {
+export function DesktopIcon({ label, icon, selected, x, y, onPointerDown, onPointerMove, onPointerUp, onContextMenu }: Props) {
   return (
     <button
-      className="desktop-icon-button group flex h-[64px] w-[82px] flex-col items-center justify-start gap-[1px] p-0 text-white focus:outline-none"
+      className="desktop-icon-button absolute flex h-[68px] w-[75px] touch-none flex-col items-center justify-start gap-[2px] p-[2px] text-white focus:outline-none"
+      style={{ left: x, top: y }}
       title={label}
-      onClick={onClick}
+      onClick={(event) => event.stopPropagation()}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
       onContextMenu={onContextMenu}
       aria-label={label}
     >
-      <span className={`flex items-center justify-center ${selected ? "brightness-75 contrast-150" : ""}`} style={selected ? { filter: "brightness(0.7) saturate(2) hue-rotate(180deg)" } : {}}>
-        <WSBootIcon type={icon} size={30} />
-      </span>
+      {/* Icon with selection mask */}
       <span
-        className={`desktop-icon-label max-w-[82px] break-words text-center text-[11px] leading-[12px] px-[3px] ${
-          selected ? "bg-[#000080] text-white" : "bg-[#2c8379] text-white"
+        className="flex items-center justify-center p-[2px]"
+        style={selected ? { background: "rgba(0, 0, 128, 0.4)", mixBlendMode: "normal" } : undefined}
+      >
+        <WSBootIcon type={icon} size={32} />
+      </span>
+      {/* Label */}
+      <span
+        className={`desktop-icon-label max-w-[72px] break-words text-center text-[11px] leading-[13px] px-[2px] py-[1px] ${
+          selected
+            ? "bg-[#000080] text-white outline outline-1 outline-dotted outline-white"
+            : "text-white"
         }`}
       >
         {label}

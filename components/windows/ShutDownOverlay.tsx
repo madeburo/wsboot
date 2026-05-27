@@ -21,7 +21,7 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
       >
         {/* Title bar */}
         <div className="flex h-[18px] items-center bg-gradient-to-r from-[#000080] to-[#1084d0] px-[4px]">
-          <span className="text-[11px] font-bold text-white">Shut Down Windows</span>
+          <span className="text-[11px] font-bold text-white">Shut Down WSBoot</span>
         </div>
 
         {/* Body */}

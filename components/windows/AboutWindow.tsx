@@ -19,7 +19,7 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <WSBootIcon type="computer" size={28} />
-            <div className="font-bold">Welcome to my personal operating system.</div>
+            <div className="font-bold">Welcome to WSBoot — my web desktop.</div>
           </div>
           <section>
             <h3 className="font-bold">Who am I</h3>

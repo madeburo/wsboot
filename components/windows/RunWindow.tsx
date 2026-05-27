@@ -32,7 +32,7 @@ export function RunWindow({ window, openWindow, closeWindow, notify, playSound }
     >
       <div className="flex gap-3">
         <div className="text-3xl">▣</div>
-        <p>Type the name of a program, folder, document, or internet resource, and Personal OS will open it.</p>
+        <p>Type the name of a program, folder, document, or internet resource, and WSBoot will open it.</p>
       </div>
       <label className="grid grid-cols-[52px_1fr] items-center gap-2">
         <span>Open:</span>

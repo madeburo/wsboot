@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export type ScreensaverMode = "logos" | "pipes" | "stars";
+export type ScreensaverMode = "pipes" | "stars";
 
 export function useScreensaver(timeoutMs = 60000) {
   const [active, setActive] = useState(false);
-  const [mode, setMode] = useState<ScreensaverMode>("logos");
+  const [mode, setMode] = useState<ScreensaverMode>("stars");
   const timer = useRef<number | null>(null);
 
   const clear = useCallback(() => {
@@ -16,12 +16,11 @@ export function useScreensaver(timeoutMs = 60000) {
   const schedule = useCallback(() => {
     clear();
     timer.current = window.setTimeout(() => {
-      setMode((current) => current);
       setActive(true);
     }, timeoutMs);
   }, [clear, timeoutMs]);
 
-  const start = useCallback((nextMode: ScreensaverMode = "logos") => {
+  const start = useCallback((nextMode: ScreensaverMode = "stars") => {
     setMode(nextMode);
     setActive(true);
   }, []);

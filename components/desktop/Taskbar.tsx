@@ -26,7 +26,7 @@ export function Taskbar({ windows, activeId, startOpen, muted, onStart, onTask, 
     >
       {/* Start Button */}
       <button
-        className={`win-button taskbar-button flex h-[22px] items-center gap-[3px] px-[4px] font-bold text-[11px] ${startOpen ? "active" : ""}`}
+        className={`win-button flex h-[22px] items-center gap-[4px] px-[6px] font-bold text-[11px] ${startOpen ? "active" : ""}`}
         onClick={onStart}
         aria-label="Start"
         aria-pressed={startOpen}
@@ -38,14 +38,27 @@ export function Taskbar({ windows, activeId, startOpen, muted, onStart, onTask, 
       </button>
 
       {/* Divider */}
-      <div className="mx-[1px] h-[22px] w-[4px]" style={{ borderLeft: "1px solid #808080", borderRight: "1px solid #ffffff" }} />
+      <div className="h-[22px] w-[2px] flex-shrink-0" style={{ borderLeft: "1px solid #808080", borderRight: "1px solid #ffffff" }} />
+
+      {/* Quick Launch area - small icons */}
+      <div className="flex items-center gap-[2px] pr-[4px]">
+        <button className="desktop-icon-button flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20" title="Show Desktop">
+          <WSBootIcon type="monitor" size={16} />
+        </button>
+        <button className="desktop-icon-button flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20" title="Internet Explorer">
+          <WSBootIcon type="ie" size={16} />
+        </button>
+      </div>
+
+      {/* Divider */}
+      <div className="h-[22px] w-[2px] flex-shrink-0" style={{ borderLeft: "1px solid #808080", borderRight: "1px solid #ffffff" }} />
 
       {/* Window buttons */}
       <div className="flex min-w-0 flex-1 gap-[2px] overflow-hidden">
         {windows.map((window) => (
           <button
             key={window.instanceId}
-            className={`win-button taskbar-button flex h-[22px] min-w-[120px] max-w-[180px] items-center gap-[4px] truncate px-[4px] text-left text-[11px] ${
+            className={`win-button taskbar-button flex h-[22px] min-w-[100px] max-w-[160px] items-center gap-[4px] truncate px-[4px] text-left text-[11px] ${
               activeId === window.instanceId && !window.minimized ? "active" : ""
             }`}
             onClick={() => onTask(window.instanceId)}
