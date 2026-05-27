@@ -1,0 +1,281 @@
+@import "tailwindcss";
+@import "98.css/dist/98.css";
+
+@font-face {
+  font-family: "W95FA";
+  src: url("https://cdn.jsdelivr.net/gh/nickvdyck/windows-95-font@master/fonts/w95fa.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --win-face: #c0c0c0;
+  --win-shadow: #808080;
+  --win-dark: #404040;
+  --win-light: #ffffff;
+  --win-blue: #000080;
+  --win-blue-2: #1084d0;
+  --desktop: #008080;
+  --font-win95: "W95FA", "Pixelated MS Sans Serif", "MS Sans Serif", "Tahoma", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--font-win95);
+  font-size: 11px;
+  letter-spacing: 0;
+  color: #000;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  color: #000;
+}
+
+/* Windows 95 beveled panel */
+.win-bevel {
+  background: #c0c0c0;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #ffffff,
+    inset -2px -2px #808080,
+    inset 2px 2px #dfdfdf;
+  padding: 3px;
+}
+
+.win-bevel-inset {
+  background: #fff;
+  box-shadow:
+    inset -1px -1px #ffffff,
+    inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf,
+    inset 2px 2px #0a0a0a;
+}
+
+/* Windows 95 button */
+.win-button {
+  min-height: 23px;
+  padding: 1px 8px;
+  background: #c0c0c0;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #ffffff,
+    inset -2px -2px #808080,
+    inset 2px 2px #dfdfdf;
+  font-family: var(--font-win95);
+  font-size: 11px;
+}
+
+.win-button:active,
+.win-button[aria-pressed="true"],
+.win-button.active {
+  box-shadow:
+    inset -1px -1px #ffffff,
+    inset 1px 1px #0a0a0a,
+    inset -2px -2px #dfdfdf,
+    inset 2px 2px #808080;
+  padding-top: 2px;
+  padding-left: 9px;
+}
+
+.win-button:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+/* Title bar gradient */
+.title-gradient {
+  background: linear-gradient(90deg, #000080, #1084d0);
+}
+
+.title-inactive {
+  background: linear-gradient(90deg, #808080, #b5b5b5);
+}
+
+.title-bar-title {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  flex: 1;
+  font-weight: 700;
+  font-size: 11px;
+  gap: 4px;
+  letter-spacing: 0;
+  margin-right: 16px;
+  min-width: 0;
+}
+
+/* Menu items */
+.menu-command {
+  min-height: 0;
+  min-width: 0;
+  padding: 4px 20px;
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: var(--font-win95);
+  font-size: 11px;
+  color: #000;
+}
+
+.menu-command:hover {
+  background: #000080;
+  color: #fff;
+}
+
+.menu-command[aria-disabled="true"] {
+  color: #808080;
+  pointer-events: none;
+  text-shadow: 1px 1px 0 #fff;
+}
+
+/* Taskbar button */
+.taskbar-button {
+  min-width: 0;
+}
+
+/* Desktop icon label */
+.desktop-icon-label {
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
+}
+
+/* CRT scanline effect */
+.crt {
+  position: relative;
+}
+
+.crt::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: soft-light;
+}
+
+/* Focus ring */
+.focus-ring:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+/* Notification balloon */
+.notification-balloon {
+  background: #ffffcc;
+  border: 1px solid #000;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Windows 95 progress bar */
+.win95-progress {
+  background: #c0c0c0;
+  box-shadow:
+    inset -1px -1px #ffffff,
+    inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf,
+    inset 2px 2px #0a0a0a;
+}
+
+.win95-progress-bar {
+  background: repeating-linear-gradient(
+    90deg,
+    #000080 0px,
+    #000080 8px,
+    transparent 8px,
+    transparent 10px
+  );
+  height: 100%;
+  animation: progress-fill 2s linear infinite;
+}
+
+@keyframes progress-fill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Boot loader animation */
+@keyframes loader-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+/* Start button Windows logo */
+.start-logo {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 14px;
+  height: 14px;
+  gap: 1px;
+}
+
+.start-logo span:nth-child(1) { background: #ff0000; }
+.start-logo span:nth-child(2) { background: #00ff00; }
+.start-logo span:nth-child(3) { background: #0000ff; }
+.start-logo span:nth-child(4) { background: #ffff00; }
+
+/* Scrollbar styling for Win95 */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: repeating-conic-gradient(#c0c0c0 0% 25%, #ffffff 0% 50%) 50% / 2px 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: none;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #ffffff,
+    inset -2px -2px #808080,
+    inset 2px 2px #dfdfdf;
+}
+
+::-webkit-scrollbar-button {
+  background: #c0c0c0;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #ffffff,
+    inset -2px -2px #808080,
+    inset 2px 2px #dfdfdf;
+  display: block;
+  height: 16px;
+  width: 16px;
+}
+
+@media (max-width: 640px) {
+  html,
+  body {
+    font-size: 12px;
+  }
+}

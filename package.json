@@ -1,0 +1,30 @@
+{
+  "name": "wsboot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A retro web desktop booting in browser.",
+  "scripts": {
+    "dev": "next dev -p 3033",
+    "build": "next build",
+    "start": "next start",
+    "clean": "rm -rf .next",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "98.css": "^0.1.21",
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4.1.17",
+    "typescript": "5.9.3"
+  }
+}
