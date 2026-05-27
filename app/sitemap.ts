@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: "https://www.wsboost.com",
+      url: "https://www.wsboot.com",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,

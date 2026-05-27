@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.wsboost.com"),
+  metadataBase: new URL("https://www.wsboot.com"),
   title: {
     default: "WSBoot - Windows 98 Retro Web Desktop Experience",
     template: "%s | WSBoot",
@@ -10,12 +10,11 @@ export const metadata: Metadata = {
   description:
     "WSBoot is a fully interactive Windows 98-inspired web desktop. Play Doom, Minesweeper, Solitaire and Snake. Use Winamp, Paint, Norton Commander and more — all in your browser with pixel-perfect retro UI.",
   applicationName: "WSBoot",
-  authors: [{ name: "WSBoost", url: "https://www.wsboost.com" }],
-  creator: "WSBoost",
-  publisher: "WSBoost",
+  authors: [{ name: "WSBoot", url: "https://www.wsboot.com" }],
+  creator: "WSBoot",
+  publisher: "WSBoot",
   keywords: [
     "WSBoot",
-    "WSBoost",
     "Windows 98",
     "Windows 98 simulator",
     "retro desktop",
@@ -49,7 +48,7 @@ export const metadata: Metadata = {
     title: "WSBoot - Windows 98 Retro Web Desktop",
     description:
       "Play Doom, Minesweeper, Solitaire. Use Winamp, Paint, Norton Commander — a fully interactive Windows 98 desktop in your browser.",
-    url: "https://www.wsboost.com",
+    url: "https://www.wsboot.com",
     siteName: "WSBoot",
     locale: "en_US",
     images: [
@@ -100,7 +99,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "WSBoot",
-  url: "https://www.wsboost.com",
+  url: "https://www.wsboot.com",
   description:
     "A fully interactive Windows 98-inspired web desktop. Play Doom, Minesweeper, Solitaire and Snake. Use Winamp, Paint, Norton Commander and more — all in your browser.",
   applicationCategory: "Entertainment",
@@ -112,8 +111,8 @@ const jsonLd = {
   },
   author: {
     "@type": "Organization",
-    name: "WSBoost",
-    url: "https://www.wsboost.com",
+    name: "WSBoot",
+    url: "https://www.wsboot.com",
   },
 };
 
