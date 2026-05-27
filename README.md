@@ -6,7 +6,7 @@ Boot sequence, draggable windows, Start menu, taskbar, mini-games, Winamp-style 
 
 > Press any key to boot the web like it's 1998.
 
-![Windows 95](https://img.shields.io/badge/Windows-95-008080?style=flat-square)
+![Windows 98](https://img.shields.io/badge/Windows-98-008080?style=flat-square)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square&logo=typescript)
 
@@ -78,10 +78,6 @@ npm start
 ├── lib/                    # Data & types
 └── public/sounds/          # Audio files
 ```
-
-## Domain
-
-[wsboot.com](https://wsboot.com)
 
 ## License
 
