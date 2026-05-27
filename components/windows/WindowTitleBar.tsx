@@ -1,7 +1,7 @@
 "use client";
 
 import { DesktopWindow } from "@/lib/windows";
-import { Win95Icon } from "@/components/desktop/Win95Icon";
+import { WSBootIcon } from "@/components/desktop/WSBootIcon";
 
 type Props = {
   window: DesktopWindow;
@@ -13,6 +13,10 @@ type Props = {
 };
 
 export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose, onPointerDown }: Props) {
+  const stopControlDrag = (event: React.PointerEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  };
+
   return (
     <div
       className={`flex h-[18px] items-center px-[2px] cursor-move select-none ${
@@ -24,7 +28,7 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
     >
       {/* Icon + Title */}
       <div className="flex flex-1 items-center gap-[3px] min-w-0">
-        <Win95Icon type={window.icon} size={14} />
+        <WSBootIcon type={window.icon} size={14} />
         <span className="truncate text-[11px] font-bold text-white">{window.title}</span>
       </div>
 
@@ -32,6 +36,7 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
       <div className="flex gap-[2px]">
         {/* Minimize */}
         <button
+          onPointerDown={stopControlDrag}
           onClick={onMinimize}
           className="flex h-[14px] w-[16px] items-end justify-center bg-[#c0c0c0] pb-[1px]"
           style={{
@@ -43,6 +48,7 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         </button>
         {/* Maximize */}
         <button
+          onPointerDown={stopControlDrag}
           onClick={onMaximize}
           className="flex h-[14px] w-[16px] items-center justify-center bg-[#c0c0c0]"
           style={{
@@ -61,6 +67,7 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         </button>
         {/* Close */}
         <button
+          onPointerDown={stopControlDrag}
           onClick={onClose}
           className="flex h-[14px] w-[16px] items-center justify-center bg-[#c0c0c0]"
           style={{

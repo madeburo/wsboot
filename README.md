@@ -1,12 +1,12 @@
 # WSBoot
 
-A retro web desktop environment inspired by the Windows 95/98 era.
+A retro web desktop environment inspired by the WSBoot era.
 
 Boot sequence, draggable windows, Start menu, taskbar, mini-games, Winamp-style music player, screensavers, and system sounds — all running in the browser.
 
 > Press any key to boot the web like it's 1998.
 
-![Windows 98](https://img.shields.io/badge/Windows-98-008080?style=flat-square)
+![WSBoot](https://img.shields.io/badge/WSBoot-retro-008080?style=flat-square)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square&logo=typescript)
 
@@ -14,11 +14,11 @@ Boot sequence, draggable windows, Start menu, taskbar, mini-games, Winamp-style 
 
 **WSBoot** = Web System Boot
 
-A fully interactive desktop environment that runs in your browser. Everything from the BIOS POST screen to the shutdown dialog is recreated with pixel-perfect attention to the Windows 95 aesthetic.
+A fully interactive desktop environment that runs in your browser. Everything from the BIOS POST screen to the shutdown dialog is recreated with pixel-perfect attention to the WSBoot aesthetic.
 
 ## Features
 
-- **Boot sequence** — BIOS POST → Windows 95 loading screen with progress bar
+- **Boot sequence** — BIOS POST → WSBoot desktop
 - **Desktop** — draggable icons, right-click context menu, teal wallpaper
 - **Window management** — open, close, minimize, maximize, drag, z-order stacking
 - **Start Menu** — classic side banner, program list, Shut Down
@@ -41,8 +41,8 @@ A fully interactive desktop environment that runs in your browser. Everything fr
 
 - **Next.js 16** (App Router, Turbopack)
 - **React 19**, TypeScript
-- **Tailwind CSS 4** + [98.css](https://jdan.github.io/98.css/)
-- **Custom SVG icons** in Windows 95 style
+- **Tailwind CSS 4** + custom WSBoot desktop CSS
+- **Custom SVG icons** in WSBoot style
 - **Web Audio API**
 
 ## Getting Started
@@ -64,7 +64,7 @@ npm start
 
 ```
 ├── app/                    # Next.js app router
-│   ├── globals.css         # Win95 theme
+│   ├── globals.css         # WSBoot theme
 │   ├── layout.tsx          # Root layout
 │   └── page.tsx            # Entry point
 ├── components/

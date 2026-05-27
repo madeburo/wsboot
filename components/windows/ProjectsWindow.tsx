@@ -1,6 +1,6 @@
 "use client";
 
-import { Win95Icon } from "@/components/desktop/Win95Icon";
+import { WSBootIcon } from "@/components/desktop/WSBootIcon";
 import { projects } from "@/lib/projects";
 import type { WindowComponentProps } from "@/lib/windows";
 import { MenuBar } from "./MenuBar";
@@ -20,7 +20,7 @@ export function ProjectsWindow({ openWindow, notify }: WindowComponentProps) {
             className="grid grid-cols-[34px_1fr_auto] items-center gap-2 border-b border-[#dfdfdf] p-2 hover:bg-[#000080] hover:text-white"
             onDoubleClick={() => openWindow("project-details", project.slug)}
           >
-            <Win95Icon type="folder" size={28} />
+            <WSBootIcon type="folder" size={28} />
             <div>
               <div className="font-bold">{project.name}</div>
               <div>{project.description}</div>

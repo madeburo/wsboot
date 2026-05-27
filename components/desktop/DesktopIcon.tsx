@@ -1,6 +1,6 @@
 "use client";
 
-import { Win95Icon } from "./Win95Icon";
+import { WSBootIcon } from "./WSBootIcon";
 
 type Props = {
   id: string;
@@ -14,18 +14,18 @@ type Props = {
 export function DesktopIcon({ label, icon, selected, onClick, onContextMenu }: Props) {
   return (
     <button
-      className="group flex h-[70px] w-[70px] flex-col items-center justify-start gap-[2px] p-1 text-white focus:outline-none"
+      className="desktop-icon-button group flex h-[64px] w-[82px] flex-col items-center justify-start gap-[1px] p-0 text-white focus:outline-none"
       title={label}
       onClick={onClick}
       onContextMenu={onContextMenu}
       aria-label={label}
     >
       <span className={`flex items-center justify-center ${selected ? "brightness-75 contrast-150" : ""}`} style={selected ? { filter: "brightness(0.7) saturate(2) hue-rotate(180deg)" } : {}}>
-        <Win95Icon type={icon} size={32} />
+        <WSBootIcon type={icon} size={30} />
       </span>
       <span
-        className={`desktop-icon-label max-w-[64px] break-words text-center text-[11px] leading-[13px] px-[2px] ${
-          selected ? "bg-[#000080] text-white" : "text-white"
+        className={`desktop-icon-label max-w-[82px] break-words text-center text-[11px] leading-[12px] px-[3px] ${
+          selected ? "bg-[#000080] text-white" : "bg-[#2c8379] text-white"
         }`}
       >
         {label}

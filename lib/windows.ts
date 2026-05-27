@@ -2,10 +2,13 @@ import type { ReactNode } from "react";
 
 export type WindowId =
   | "about"
+  | "computer"
   | "projects"
   | "contact"
   | "games"
   | "music"
+  | "norton"
+  | "paint"
   | "screensaver"
   | "run"
   | "settings"
@@ -47,10 +50,13 @@ export type WindowComponentProps = {
 
 export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   about: { id: "about", title: "About Me", icon: "computer", width: 520, height: 430 },
+  computer: { id: "computer", title: "My Computer", icon: "computer", width: 660, height: 450 },
   projects: { id: "projects", title: "Projects", icon: "folder", width: 720, height: 500 },
   contact: { id: "contact", title: "Contact", icon: "mail", width: 500, height: 380 },
   games: { id: "games", title: "Games", icon: "joystick", width: 760, height: 560 },
-  music: { id: "music", title: "Music", icon: "music", width: 570, height: 430 },
+  music: { id: "music", title: "Winamp", icon: "winamp", width: 310, height: 470 },
+  norton: { id: "norton", title: "Norton Commander", icon: "norton", width: 760, height: 500 },
+  paint: { id: "paint", title: "untitled - Paint", icon: "paint", width: 760, height: 500 },
   screensaver: { id: "screensaver", title: "Screensaver", icon: "monitor", width: 460, height: 330 },
   run: { id: "run", title: "Run", icon: "run", width: 420, height: 210 },
   settings: { id: "settings", title: "Settings", icon: "settings", width: 520, height: 380 },
@@ -65,13 +71,32 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
 
 export type RenderWindow = (props: WindowComponentProps) => ReactNode;
 
-export const desktopIcons: Array<{ id: WindowId | "computer" | "recycle"; label: string; icon: string }> = [
-  { id: "computer", label: "My Computer", icon: "computer" },
-  { id: "recycle", label: "Recycle Bin", icon: "trash" },
-  { id: "about", label: "About Me", icon: "profile" },
-  { id: "projects", label: "My Projects", icon: "folder" },
-  { id: "contact", label: "Contact", icon: "mail" },
-  { id: "games", label: "Games", icon: "joystick" },
-  { id: "music", label: "Music", icon: "music" },
-  { id: "screensaver", label: "Screen Saver", icon: "monitor" },
+export type DesktopIconDefinition = {
+  id: string;
+  label: string;
+  icon: string;
+  windowId?: WindowId;
+  message?: string;
+};
+
+export const desktopIcons: DesktopIconDefinition[] = [
+  { id: "computer", label: "My Computer", icon: "computer", windowId: "computer" },
+  { id: "winamp", label: "Winamp", icon: "winamp", windowId: "music" },
+  { id: "documents", label: "My Documents", icon: "documents", windowId: "projects" },
+  { id: "pipes", label: "3D Pipes", icon: "pipes", windowId: "screensaver" },
+  { id: "network", label: "Network Neighborhood", icon: "network", windowId: "norton" },
+  { id: "flower-box", label: "3D Flower Box", icon: "pipes", windowId: "screensaver" },
+  { id: "recycle", label: "Recycle Bin", icon: "trash", message: "Recycle Bin is empty. Very responsible." },
+  { id: "prompt", label: "MS-DOS Prompt", icon: "prompt", windowId: "run" },
+  { id: "pictures", label: "My Pictures", icon: "folder", windowId: "projects" },
+  { id: "calculator", label: "Calculator", icon: "calculator", message: "Calculator says 98 + vibes = WSBoot." },
+  { id: "themes", label: "Themes", icon: "folder", windowId: "settings" },
+  { id: "pinball", label: "Pinball", icon: "pinball", windowId: "games" },
+  { id: "credits", label: "CREDITS.txt", icon: "notepad", windowId: "about" },
+  { id: "internet", label: "Internet Explorer", icon: "ie", windowId: "contact" },
+  { id: "paint", label: "Paint", icon: "paint", windowId: "paint" },
+  { id: "minesweeper", label: "Minesweeper", icon: "mine", windowId: "games" },
+  { id: "sound", label: "Sound Recorder", icon: "recorder", message: "Sound Recorder captured a nostalgic click." },
+  { id: "solitaire", label: "Solitaire", icon: "cards", windowId: "games" },
+  { id: "notepad", label: "Notepad", icon: "notepad", windowId: "about" },
 ];

@@ -6,15 +6,22 @@ export function SystemTray({ muted, onToggleMute }: { muted: boolean; onToggleMu
   const time = useClock();
   return (
     <div
-      className="ml-auto flex h-[22px] items-center gap-[6px] px-[6px] text-[11px]"
+      className="ml-auto flex h-[22px] items-center gap-[3px] px-[4px] text-[11px]"
       style={{
-        boxShadow: "inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a"
+        border: "1px solid transparent",
+        borderColor: "#808080 #ffffff #ffffff #808080",
+        boxShadow: "inset 1px 1px #dfdfdf"
       }}
     >
+      <span className="relative inline-block h-[14px] w-[14px]" aria-hidden="true">
+        <span className="absolute left-[1px] top-[1px] h-[8px] w-[8px] border border-[#000080] bg-white" />
+        <span className="absolute bottom-[1px] right-[1px] h-[8px] w-[8px] border border-[#800000] bg-white" />
+        <span className="absolute bottom-0 right-0 h-[5px] w-[5px] rounded-full border border-[#800000] bg-[#ff0000]" />
+      </span>
       <button
         aria-label={muted ? "Unmute sound" : "Mute sound"}
         onClick={onToggleMute}
-        className="flex items-center text-[11px]"
+        className="desktop-icon-button flex h-[16px] w-[16px] items-center justify-center text-[11px]"
       >
         {muted ? (
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -29,7 +36,11 @@ export function SystemTray({ muted, onToggleMute }: { muted: boolean; onToggleMu
           </svg>
         )}
       </button>
-      <span className="min-w-[50px] text-right">{time}</span>
+      <span className="relative inline-block h-[14px] w-[14px]" aria-hidden="true">
+        <span className="absolute left-[1px] top-[2px] h-[10px] w-[11px] border border-black bg-[#0039c7]" />
+        <span className="absolute left-[3px] top-[4px] h-[6px] w-[7px] bg-[linear-gradient(135deg,#ff0000_0_24%,#ffff00_24%_48%,#00aa00_48%_72%,#0000ff_72%)]" />
+      </span>
+      <span className="min-w-[54px] pl-[5px] text-right">{time}</span>
     </div>
   );
 }

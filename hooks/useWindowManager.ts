@@ -96,6 +96,23 @@ export function useWindowManager() {
     );
   }, []);
 
+  const resizeWindow = useCallback((instanceId: string, width: number, height: number) => {
+    setWindows((items) =>
+      items.map((item) => {
+        if (item.instanceId !== instanceId) return item;
+        const definition = windowDefinitions[item.id];
+        const minWidth = definition.minWidth ?? 260;
+        const minHeight = definition.minHeight ?? 180;
+        return {
+          ...item,
+          width: clamp(width, minWidth, window.innerWidth - item.x),
+          height: clamp(height, minHeight, window.innerHeight - item.y - 28),
+          maximized: false,
+        };
+      }),
+    );
+  }, []);
+
   const activeWindow = useMemo(
     () =>
       windows
@@ -113,6 +130,7 @@ export function useWindowManager() {
     minimizeWindow,
     maximizeWindow,
     moveWindow,
+    resizeWindow,
     focusWindow,
     nextZ,
   };

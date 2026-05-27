@@ -13,10 +13,12 @@ type Props = {
   onMinimize: () => void;
   onMaximize: () => void;
   onMove: (x: number, y: number) => void;
+  onResize: (width: number, height: number) => void;
 };
 
-export function WindowFrame({ window, active, children, onFocus, onClose, onMinimize, onMaximize, onMove }: Props) {
+export function WindowFrame({ window, active, children, onFocus, onClose, onMinimize, onMaximize, onMove, onResize }: Props) {
   const drag = useRef<{ dx: number; dy: number } | null>(null);
+  const resize = useRef<{ x: number; y: number; width: number; height: number } | null>(null);
 
   const style = window.maximized
     ? { left: 0, top: 0, width: "100vw", height: "calc(100vh - 28px)", zIndex: window.zIndex }
@@ -31,6 +33,22 @@ export function WindowFrame({ window, active, children, onFocus, onClose, onMini
         padding: "3px",
       }}
       onPointerDown={onFocus}
+      onPointerMove={(event) => {
+        if (drag.current) {
+          onMove(event.clientX - drag.current.dx, event.clientY - drag.current.dy);
+          return;
+        }
+        if (resize.current) {
+          onResize(
+            resize.current.width + event.clientX - resize.current.x,
+            resize.current.height + event.clientY - resize.current.y,
+          );
+        }
+      }}
+      onPointerUp={() => {
+        drag.current = null;
+        resize.current = null;
+      }}
       role="dialog"
       aria-label={window.title}
     >
@@ -49,16 +67,25 @@ export function WindowFrame({ window, active, children, onFocus, onClose, onMini
       />
       <div
         className="min-h-0 flex-1 overflow-auto bg-[#c0c0c0] mt-[2px]"
-        onPointerMove={(event) => {
-          if (!drag.current) return;
-          onMove(event.clientX - drag.current.dx, event.clientY - drag.current.dy);
-        }}
-        onPointerUp={() => {
-          drag.current = null;
-        }}
       >
         {children}
       </div>
+      {!window.maximized && (
+        <button
+          className="absolute bottom-[3px] right-[3px] h-[14px] w-[14px] cursor-se-resize"
+          style={{
+            background:
+              "repeating-linear-gradient(135deg, transparent 0 3px, #808080 3px 4px, #ffffff 4px 5px)",
+          }}
+          aria-label="Resize window"
+          onPointerDown={(event) => {
+            event.stopPropagation();
+            onFocus();
+            resize.current = { x: event.clientX, y: event.clientY, width: window.width, height: window.height };
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+        />
+      )}
     </div>
   );
 }

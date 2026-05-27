@@ -9,9 +9,12 @@ import { StartMenu } from "./StartMenu";
 import { Taskbar } from "./Taskbar";
 import { WindowFrame } from "@/components/windows/WindowFrame";
 import { AboutWindow } from "@/components/windows/AboutWindow";
+import { ComputerWindow } from "@/components/windows/ComputerWindow";
 import { ContactWindow } from "@/components/windows/ContactWindow";
 import { GamesWindow } from "@/components/windows/GamesWindow";
 import { MusicWindow } from "@/components/windows/MusicWindow";
+import { NortonCommanderWindow } from "@/components/windows/NortonCommanderWindow";
+import { PaintWindow } from "@/components/windows/PaintWindow";
 import { ProjectDetailsWindow } from "@/components/windows/ProjectDetailsWindow";
 import { ProjectsWindow } from "@/components/windows/ProjectsWindow";
 import { RunWindow } from "@/components/windows/RunWindow";
@@ -65,13 +68,9 @@ export default function Desktop() {
     },
     (id) => {
       setSelectedIcon(id);
-      if (id === "computer") {
-        notify("C: drive reports 640K of excellent vibes.");
-      } else if (id === "recycle") {
-        notify("Recycle Bin is empty. Very responsible.");
-      } else {
-        openWindow(id as WindowId);
-      }
+      const icon = desktopIcons.find((item) => item.id === id);
+      if (icon?.windowId) openWindow(icon.windowId);
+      else notify(icon?.message ?? "Shortcut is resting on the desktop.");
     },
   );
 
@@ -79,6 +78,8 @@ export default function Desktop() {
     switch (props.window.id) {
       case "about":
         return <AboutWindow {...props} />;
+      case "computer":
+        return <ComputerWindow {...props} />;
       case "projects":
         return <ProjectsWindow {...props} />;
       case "project-details":
@@ -89,6 +90,10 @@ export default function Desktop() {
         return <GamesWindow {...props} />;
       case "music":
         return <MusicWindow {...props} />;
+      case "norton":
+        return <NortonCommanderWindow {...props} />;
+      case "paint":
+        return <PaintWindow />;
       case "run":
         return <RunWindow {...props} />;
       case "settings":
@@ -116,12 +121,14 @@ export default function Desktop() {
         playSound("close");
       }
       if (event.key === "Enter" && selectedIcon) {
-        if (selectedIcon !== "computer" && selectedIcon !== "recycle") openWindow(selectedIcon as WindowId);
+        const icon = desktopIcons.find((item) => item.id === selectedIcon);
+        if (icon?.windowId) openWindow(icon.windowId);
+        else if (icon?.message) notify(icon.message);
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [openWindow, playSound, selectedIcon, wm]);
+  }, [notify, openWindow, playSound, selectedIcon, wm]);
 
   const commonProps = useMemo(
     () => ({
@@ -143,7 +150,7 @@ export default function Desktop() {
 
   return (
     <main
-      className="h-screen w-screen overflow-hidden bg-[#008080] pb-[28px]"
+      className="wsboot-wallpaper h-screen w-screen overflow-hidden pb-[28px]"
       onClick={() => {
         setContextMenu(null);
         setStartOpen(false);
@@ -154,8 +161,8 @@ export default function Desktop() {
         setContextMenu({ x: event.clientX, y: event.clientY });
       }}
     >
-      {/* Desktop icons grid - vertical columns like Win95 */}
-      <div className="flex h-[calc(100vh-28px)] w-fit flex-col flex-wrap content-start gap-[2px] p-[4px]">
+      {/* Desktop icons grid */}
+      <div className="flex h-[calc(100vh-28px)] w-[172px] flex-col flex-wrap content-start gap-x-[2px] gap-y-[5px] p-[2px]">
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}
@@ -187,6 +194,7 @@ export default function Desktop() {
           onMinimize={() => wm.minimizeWindow(item.instanceId)}
           onMaximize={() => wm.maximizeWindow(item.instanceId)}
           onMove={(x, y) => wm.moveWindow(item.instanceId, x, y)}
+          onResize={(width, height) => wm.resizeWindow(item.instanceId, width, height)}
         >
           {renderWindow({ window: item, ...commonProps })}
         </WindowFrame>
@@ -212,10 +220,11 @@ export default function Desktop() {
           y={contextMenu.y}
           target={contextMenu.target}
           onOpen={() => {
-            if (contextMenu.target && contextMenu.target !== "computer" && contextMenu.target !== "recycle") {
-              openWindow(contextMenu.target as WindowId);
+            const icon = desktopIcons.find((item) => item.id === contextMenu.target);
+            if (icon?.windowId) {
+              openWindow(icon.windowId);
             } else {
-              notify("Desktop properties are feeling nostalgic.");
+              notify(icon?.message ?? "Desktop properties are feeling nostalgic.");
             }
           }}
           onClose={() => setContextMenu(null)}

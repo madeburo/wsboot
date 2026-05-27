@@ -1,6 +1,6 @@
 "use client";
 
-import { Win95Icon } from "@/components/desktop/Win95Icon";
+import { WSBootIcon } from "@/components/desktop/WSBootIcon";
 import type { WindowComponentProps } from "@/lib/windows";
 import { MenuBar } from "./MenuBar";
 
@@ -18,7 +18,7 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Win95Icon type="computer" size={28} />
+            <WSBootIcon type="computer" size={28} />
             <div className="font-bold">Welcome to my personal operating system.</div>
           </div>
           <section>

@@ -4,16 +4,14 @@ import type { WindowComponentProps } from "@/lib/windows";
 import { MenuBar } from "./MenuBar";
 
 const contacts = [
-  ["Email", "hello@example.com"],
-  ["GitHub", "github.com/umid"],
-  ["LinkedIn", "linkedin.com/in/umid"],
-  ["X / Twitter", "x.com/umid"],
-  ["Website", "umid.dev"],
+  ["Email", "hi@wsboost.com"],
+  ["GitHub", "github.com/madeburo/wsboot"],
+  ["Website", "www.wsboost.com"],
 ];
 
 export function ContactWindow({ notify, playSound }: WindowComponentProps) {
   const copyEmail = async () => {
-    await navigator.clipboard?.writeText("hello@example.com").catch(() => undefined);
+    await navigator.clipboard?.writeText("hi@wsboost.com").catch(() => undefined);
     playSound("click");
     notify("Email copied to clipboard.");
   };

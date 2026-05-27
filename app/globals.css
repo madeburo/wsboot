@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "98.css/dist/98.css";
 
 @font-face {
   font-family: "W95FA";
@@ -17,7 +16,7 @@
   --win-blue: #000080;
   --win-blue-2: #1084d0;
   --desktop: #008080;
-  --font-win95: "W95FA", "Pixelated MS Sans Serif", "MS Sans Serif", "Tahoma", sans-serif;
+  --font-wsboot: "W95FA", "Pixelated MS Sans Serif", "MS Sans Serif", "Tahoma", sans-serif;
 }
 
 * {
@@ -31,7 +30,7 @@ body {
   margin: 0;
   overflow: hidden;
   background: #000;
-  font-family: var(--font-win95);
+  font-family: var(--font-wsboot);
   font-size: 11px;
   letter-spacing: 0;
   color: #000;
@@ -48,9 +47,13 @@ select {
 
 button {
   color: #000;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
 }
 
-/* Windows 95 beveled panel */
+/* WSBoot beveled panel */
 .win-bevel {
   background: #c0c0c0;
   box-shadow:
@@ -70,7 +73,7 @@ button {
     inset 2px 2px #0a0a0a;
 }
 
-/* Windows 95 button */
+/* WSBoot button */
 .win-button {
   min-height: 23px;
   padding: 1px 8px;
@@ -82,8 +85,12 @@ button {
     inset 1px 1px #ffffff,
     inset -2px -2px #808080,
     inset 2px 2px #dfdfdf;
-  font-family: var(--font-win95);
+  font-family: var(--font-wsboot);
   font-size: 11px;
+}
+
+.taskbar-button {
+  min-height: 0;
 }
 
 .win-button:active,
@@ -101,6 +108,31 @@ button {
 .win-button:focus-visible {
   outline: 1px dotted #000;
   outline-offset: -4px;
+}
+
+.field-border,
+.sunken-panel {
+  border: 2px solid transparent;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow:
+    inset 1px 1px #0a0a0a,
+    inset -1px -1px #dfdfdf;
+}
+
+.status-bar {
+  display: flex;
+  gap: 2px;
+  min-height: 20px;
+}
+
+.status-bar-field {
+  flex: 1;
+  margin: 0;
+  padding: 2px 6px;
+  background: #c0c0c0;
+  box-shadow:
+    inset 1px 1px #808080,
+    inset -1px -1px #ffffff;
 }
 
 /* Title bar gradient */
@@ -125,6 +157,39 @@ button {
   min-width: 0;
 }
 
+.window-menu-bar {
+  align-items: center;
+  background: #c0c0c0;
+  border-bottom: 1px solid #808080;
+  display: flex;
+  gap: 0;
+  min-height: 22px;
+  padding: 0 2px;
+  white-space: nowrap;
+}
+
+.window-menu-item {
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 2px 8px !important;
+  line-height: 14px;
+  margin-right: 10px !important;
+}
+
+.window-menu-bar > button {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  margin-right: 10px !important;
+}
+
+.window-menu-item:hover,
+.window-menu-item:focus {
+  background: #000080;
+  color: #fff;
+}
+
 /* Menu items */
 .menu-command {
   min-height: 0;
@@ -134,7 +199,7 @@ button {
   width: 100%;
   background: transparent;
   border: none;
-  font-family: var(--font-win95);
+  font-family: var(--font-wsboot);
   font-size: 11px;
   color: #000;
 }
@@ -150,14 +215,56 @@ button {
   text-shadow: 1px 1px 0 #fff;
 }
 
-/* Taskbar button */
-.taskbar-button {
-  min-width: 0;
-}
-
 /* Desktop icon label */
 .desktop-icon-label {
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+
+.desktop-icon-button,
+.desktop-icon-button:hover,
+.desktop-icon-button:active,
+.desktop-icon-button:focus {
+  appearance: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.computer-icon-button,
+.computer-icon-button:active,
+.computer-icon-button:focus {
+  appearance: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.computer-icon-button:hover {
+  background: #000080 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.wsboot-wallpaper {
+  background-color: #9fc4dc;
+  background-image: url("/clouds.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.wsboot-wallpaper::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    radial-gradient(rgba(57, 103, 134, 0.12) 1px, transparent 1px);
+  background-position: 0 0, 2px 2px;
+  background-size: 4px 4px;
+  mix-blend-mode: soft-light;
 }
 
 /* CRT scanline effect */
@@ -193,8 +300,8 @@ button {
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Windows 95 progress bar */
-.win95-progress {
+/* WSBoot progress bar */
+.wsboot-progress {
   background: #c0c0c0;
   box-shadow:
     inset -1px -1px #ffffff,
@@ -203,7 +310,7 @@ button {
     inset 2px 2px #0a0a0a;
 }
 
-.win95-progress-bar {
+.wsboot-progress-bar {
   background: repeating-linear-gradient(
     90deg,
     #000080 0px,
@@ -231,9 +338,11 @@ button {
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  width: 14px;
+  width: 16px;
   height: 14px;
   gap: 1px;
+  border-left: 1px solid #000;
+  transform: skew(-7deg);
 }
 
 .start-logo span:nth-child(1) { background: #ff0000; }
@@ -241,7 +350,7 @@ button {
 .start-logo span:nth-child(3) { background: #0000ff; }
 .start-logo span:nth-child(4) { background: #ffff00; }
 
-/* Scrollbar styling for Win95 */
+/* Scrollbar styling for WSBoot */
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;

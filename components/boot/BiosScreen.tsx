@@ -2,7 +2,7 @@
 
 const lines = [
   "Award Modular BIOS v4.51PG, An Energy Star Ally",
-  "Copyright (C) 1984-95, Award Software, Inc.",
+  "Copyright (C) 1984-98, WSBoot, Inc.",
   "",
   "ASUS P/I-P55T2P4 BIOS REV. 2.2",
   "Intel Pentium-S CPU at 166MHz",
@@ -13,7 +13,7 @@ const lines = [
   "Detecting HDD Primary Slave  ... None",
   "Detecting HDD Secondary Master... ATAPI CD-ROM",
   "",
-  "Starting Windows 95...",
+  "Starting WSBoot...",
 ];
 
 export function BiosScreen({ progress }: { progress: number }) {
