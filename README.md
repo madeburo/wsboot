@@ -1,6 +1,6 @@
 # WSBoot
 
-A retro web desktop environment inspired by the WSBoot era.
+A retro web desktop environment inspired by the 90s era.
 
 Boot sequence, draggable windows, Start menu, taskbar, mini-games, Winamp-style music player, screensavers, and system sounds — all running in the browser.
 
@@ -51,8 +51,6 @@ A fully interactive desktop environment that runs in your browser. Everything fr
 npm install
 npm run dev
 ```
-
-Open [http://localhost:3033](http://localhost:3033)
 
 ```bash
 # Production build
