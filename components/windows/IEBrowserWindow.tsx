@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
-const WAYBACK_PREFIX = "https://web.archive.org/web/1998/";
+const WAYBACK_PREFIX = "https://web.archive.org/web/1999if_/";
 const HOME_URL = "https://www.aol.com/";
 
 function toWaybackUrl(url: string): string {
@@ -17,7 +17,7 @@ function toWaybackUrl(url: string): string {
     return WAYBACK_PREFIX + "https://www.aol.com/";
   }
   if (!cleanUrl.startsWith("http://") && !cleanUrl.startsWith("https://")) {
-    cleanUrl = "https://" + cleanUrl;
+    cleanUrl = "http://" + cleanUrl;
   }
   return WAYBACK_PREFIX + cleanUrl;
 }
@@ -26,6 +26,11 @@ function getDisplayUrl(url: string): string {
   // Show the original URL in address bar (without wayback prefix)
   if (url.startsWith(WAYBACK_PREFIX)) {
     return url.slice(WAYBACK_PREFIX.length);
+  }
+  // Handle other wayback URL formats
+  const waybackMatch = url.match(/^https:\/\/web\.archive\.org\/web\/[^/]+\/(.*)/);
+  if (waybackMatch) {
+    return waybackMatch[1];
   }
   return url;
 }
@@ -173,7 +178,7 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
         <iframe
           src={currentUrl}
           className="w-full h-full border-0"
-          sandbox="allow-scripts allow-forms"
+          sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
           onLoad={() => {
             setLoading(false);
             setStatusText("Done");
