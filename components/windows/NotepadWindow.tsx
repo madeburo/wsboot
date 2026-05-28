@@ -175,7 +175,7 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
       <div className="min-h-0 flex-1 p-0">
         <textarea
           ref={textareaRef}
-          className="h-full w-full resize-none border-0 bg-white p-1 outline-none"
+          className="notepad-textarea h-full w-full resize-none border-0 bg-white p-1 outline-none"
           style={{
             fontFamily: "\"Fixedsys\", \"Courier New\", monospace",
             fontSize: "13px",

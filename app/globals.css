@@ -849,3 +849,11 @@ button {
     font-size: 12px;
   }
 }
+
+/* Notepad textarea - ensure black text */
+.notepad-textarea {
+  color: #000000 !important;
+  -webkit-font-smoothing: auto !important;
+  -moz-osx-font-smoothing: auto !important;
+  -webkit-text-fill-color: #000000 !important;
+}

@@ -38,14 +38,14 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         <button
           onPointerDown={stopControlDrag}
           onClick={onMinimize}
-          className="flex h-[16px] w-[16px] items-end justify-center pb-[2px]"
+          className="flex h-[16px] w-[16px] items-center justify-center pb-[1px]"
           style={{
             background: "#c0c0c0",
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
           aria-label="Minimize"
         >
-          <span className="block h-[2px] w-[6px] bg-black" />
+          <span className="block h-[2px] w-[6px] bg-black mt-[6px]" />
         </button>
         {/* Maximize */}
         <button

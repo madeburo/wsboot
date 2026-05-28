@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
 export function MediaPlayerWindow({ window: win, playSound }: WindowComponentProps) {
@@ -9,44 +9,9 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(70);
-  const [muted, setMuted] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const hasTriedAutoplay = useRef(false);
-
-  useEffect(() => {
-    if (!videoFile) {
-      audioRef.current = new Audio("/sounds/windows-98-startup-sound.mp3");
-    }
-    return () => {
-      audioRef.current?.pause();
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [videoFile]);
-
-  // Auto-play video - try with sound first, fallback to muted
-  useEffect(() => {
-    if (!videoFile || !videoRef.current || hasTriedAutoplay.current) return;
-    hasTriedAutoplay.current = true;
-    const video = videoRef.current;
-    video.volume = volume / 100;
-    video.muted = false;
-
-    video.play().then(() => {
-      setPlaying(true);
-    }).catch(() => {
-      // Browser blocked autoplay with sound, try muted
-      video.muted = true;
-      setMuted(true);
-      video.play().then(() => {
-        setPlaying(true);
-      }).catch(() => {
-        // Even muted failed, user needs to click
-      });
-    });
-  }, [videoFile, volume]);
+  const [volume] = useState(70);
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -55,95 +20,73 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
   };
 
   const play = useCallback(() => {
-    if (videoFile && videoRef.current) {
-      videoRef.current.muted = false;
-      setMuted(false);
-      videoRef.current.play().catch(() => {});
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    setMuted(false);
+    video.play().then(() => {
       setPlaying(true);
-      return;
-    }
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = 0;
-    audio.play().catch(() => playSound("startup"));
-    setPlaying(true);
-    setProgress(0);
-
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      if (audio.duration) {
-        const pct = (audio.currentTime / audio.duration) * 100;
-        setProgress(pct);
-        if (audio.ended) {
-          setPlaying(false);
-          setProgress(0);
-          clearInterval(intervalRef.current!);
-        }
-      }
-    }, 100);
-  }, [videoFile, playSound]);
+    }).catch(() => {
+      // If unmuted play fails, try muted
+      video.muted = true;
+      setMuted(true);
+      video.play().then(() => setPlaying(true)).catch(() => {});
+    });
+  }, []);
 
   const pause = useCallback(() => {
-    if (videoFile && videoRef.current) {
-      videoRef.current.pause();
-      setPlaying(false);
-      return;
-    }
-    audioRef.current?.pause();
+    const video = videoRef.current;
+    if (!video) return;
+    video.pause();
     setPlaying(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  }, [videoFile]);
+  }, []);
 
   const stop = useCallback(() => {
-    if (videoFile && videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-      setPlaying(false);
-      setProgress(0);
-      setCurrentTime(0);
-      return;
-    }
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
+    const video = videoRef.current;
+    if (!video) return;
+    video.pause();
+    video.currentTime = 0;
     setPlaying(false);
     setProgress(0);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  }, [videoFile]);
+    setCurrentTime(0);
+  }, []);
 
   const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      const ct = videoRef.current.currentTime;
-      const dur = videoRef.current.duration || 0;
-      setCurrentTime(ct);
-      setDuration(dur);
-      setProgress(dur > 0 ? (ct / dur) * 100 : 0);
-    }
+    const video = videoRef.current;
+    if (!video) return;
+    const ct = video.currentTime;
+    const dur = video.duration || 0;
+    setCurrentTime(ct);
+    setDuration(dur);
+    setProgress(dur > 0 ? (ct / dur) * 100 : 0);
   };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const video = videoRef.current;
+    if (!video || !video.duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    if (videoFile && videoRef.current && videoRef.current.duration) {
-      videoRef.current.currentTime = pct * videoRef.current.duration;
-    }
+    video.currentTime = pct * video.duration;
   };
 
   const handleUnmute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = false;
-      setMuted(false);
-      if (!playing) {
-        videoRef.current.play().catch(() => {});
-        setPlaying(true);
-      }
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    setMuted(false);
+  };
+
+  const handleCanPlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setDuration(video.duration || 0);
+    if (!playing) {
+      setPlaying(true);
     }
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#c0c0c0]">
+    <div className="flex flex-col h-full" style={{ background: "#c0c0c0" }}>
       {/* Menu bar */}
       <div className="window-menu-bar">
         <button className="window-menu-item">File</button>
@@ -155,27 +98,36 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
       </div>
 
       {/* Video/Display area */}
-      <div className="flex-1 bg-black flex items-center justify-center mx-[3px] mt-[3px] relative overflow-hidden min-h-0">
+      <div className="flex-1 flex items-center justify-center mx-[3px] mt-[3px] relative overflow-hidden min-h-0" style={{ background: "#000" }}>
         {videoFile ? (
           <>
             <video
               ref={videoRef}
               src={videoFile}
+              autoPlay
+              muted
+              playsInline
               className="w-full h-full object-contain"
               onTimeUpdate={handleTimeUpdate}
               onEnded={() => setPlaying(false)}
+              onCanPlay={handleCanPlay}
               onLoadedMetadata={() => {
                 if (videoRef.current) setDuration(videoRef.current.duration);
               }}
-              playsInline
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
             />
             {muted && (
               <button
-                className="absolute top-2 right-2 bg-[#c0c0c0] border border-[#808080] px-2 py-1 text-[10px] hover:bg-[#dfdfdf]"
+                className="absolute top-2 right-2 px-3 py-1 text-[11px]"
                 onClick={handleUnmute}
-                style={{ boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff" }}
+                style={{
+                  background: "#c0c0c0",
+                  border: "none",
+                  boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf",
+                }}
               >
-                🔊 Click to unmute
+                🔊 Click for sound
               </button>
             )}
           </>
@@ -189,24 +141,19 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
                 <rect x="40" y="40" width="35" height="35" fill="#ffb800" rx="2" transform="skewY(-5) skewX(-3)" />
               </g>
             </svg>
-            {playing && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full animate-ping" />
-              </div>
-            )}
           </div>
         )}
       </div>
 
       {/* Track info bar */}
       <div
-        className="flex items-center h-[20px] mx-[3px] mt-[3px] px-2 bg-white text-[10px]"
-        style={{ boxShadow: "inset 1px 1px #808080, inset -1px -1px #dfdfdf" }}
+        className="flex items-center h-[20px] mx-[3px] mt-[3px] px-2 text-[10px]"
+        style={{ background: "#fff", boxShadow: "inset 1px 1px #808080, inset -1px -1px #dfdfdf" }}
       >
         <span className="text-[11px] mr-1">🎬</span>
-        <span className="truncate flex-1">{win.payload || "Windows Media Player"}</span>
+        <span className="truncate flex-1" style={{ color: "#000" }}>{win.payload || "Windows Media Player"}</span>
         {videoFile && duration > 0 && (
-          <span className="text-[9px] text-[#808080] ml-2 shrink-0">
+          <span className="text-[9px] ml-2 shrink-0" style={{ color: "#808080" }}>
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
         )}
@@ -252,8 +199,8 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
 
         {/* Volume */}
         <span className="text-[12px] ml-1">🔊</span>
-        <div className="w-[60px] h-[6px] border border-[#808080] bg-white ml-1 relative">
-          <div className="h-full bg-[#000080]" style={{ width: `${volume}%` }} />
+        <div className="w-[60px] h-[6px] ml-1 relative" style={{ border: "1px solid #808080", background: "#fff" }}>
+          <div className="h-full" style={{ width: `${volume}%`, background: "#000080" }} />
         </div>
       </div>
 
@@ -264,8 +211,8 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
         onClick={handleSeek}
       >
         <div
-          className="h-full transition-all duration-75"
-          style={{ width: `${progress}%`, background: "linear-gradient(to right, #000080, #1084d0)" }}
+          className="h-full"
+          style={{ width: `${progress}%`, background: "linear-gradient(to right, #000080, #1084d0)", transition: "width 0.1s" }}
         />
       </div>
     </div>
