@@ -57,6 +57,13 @@ export function Taskbar({ windows, activeId, startOpen, muted, onStart, onTask, 
         >
           <WSBootIcon type="ie" size={16} />
         </button>
+        <button
+          className="flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20 active:translate-x-px active:translate-y-px"
+          title="Outlook Express"
+          onClick={() => onQuickLaunch?.("outlook")}
+        >
+          <WSBootIcon type="msoutlook" size={16} />
+        </button>
       </div>
 
       {/* Divider */}

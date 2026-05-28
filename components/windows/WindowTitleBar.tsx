@@ -19,7 +19,7 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
 
   return (
     <div
-      className={`flex h-[18px] items-center px-[2px] cursor-move select-none ${
+      className={`flex h-[20px] items-center px-[2px] cursor-move select-none ${
         active
           ? "bg-gradient-to-r from-[#000080] to-[#1084d0]"
           : "bg-gradient-to-r from-[#808080] to-[#b5b5b5]"
@@ -33,12 +33,12 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
       </div>
 
       {/* Window controls */}
-      <div className="flex gap-[2px]">
+      <div className="flex gap-[0px]">
         {/* Minimize */}
         <button
           onPointerDown={stopControlDrag}
           onClick={onMinimize}
-          className="flex h-[14px] w-[16px] items-end justify-center bg-[#c0c0c0] pb-[1px]"
+          className="flex h-[16px] w-[16px] items-end justify-center bg-[#c0c0c0] pb-[2px]"
           style={{
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
@@ -50,7 +50,7 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         <button
           onPointerDown={stopControlDrag}
           onClick={onMaximize}
-          className="flex h-[14px] w-[16px] items-center justify-center bg-[#c0c0c0]"
+          className="flex h-[16px] w-[16px] items-center justify-center bg-[#c0c0c0]"
           style={{
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
@@ -65,11 +65,13 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
             <span className="block h-[8px] w-[9px] border-[1px] border-black border-t-[2px]" />
           )}
         </button>
+        {/* Spacer before close */}
+        <span className="w-[2px]" />
         {/* Close */}
         <button
           onPointerDown={stopControlDrag}
           onClick={onClose}
-          className="flex h-[14px] w-[16px] items-center justify-center bg-[#c0c0c0]"
+          className="flex h-[16px] w-[16px] items-center justify-center bg-[#c0c0c0]"
           style={{
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
