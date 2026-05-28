@@ -12,9 +12,10 @@ type Props = {
   onStart: () => void;
   onTask: (instanceId: string) => void;
   onToggleMute: () => void;
+  onQuickLaunch?: (id: string) => void;
 };
 
-export function Taskbar({ windows, activeId, startOpen, muted, onStart, onTask, onToggleMute }: Props) {
+export function Taskbar({ windows, activeId, startOpen, muted, onStart, onTask, onToggleMute, onQuickLaunch }: Props) {
   return (
     <div
       className="fixed bottom-0 left-0 z-[4000] flex h-[28px] w-screen items-center gap-[3px] bg-[#c0c0c0] px-[2px]"
@@ -40,12 +41,20 @@ export function Taskbar({ windows, activeId, startOpen, muted, onStart, onTask, 
       {/* Divider */}
       <div className="h-[22px] w-[2px] flex-shrink-0" style={{ borderLeft: "1px solid #808080", borderRight: "1px solid #ffffff" }} />
 
-      {/* Quick Launch area - small icons */}
+      {/* Quick Launch area */}
       <div className="flex items-center gap-[2px] pr-[4px]">
-        <button className="desktop-icon-button flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20" title="Show Desktop">
-          <WSBootIcon type="monitor" size={16} />
+        <button
+          className="flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20 active:translate-x-px active:translate-y-px"
+          title="My Computer"
+          onClick={() => onQuickLaunch?.("computer")}
+        >
+          <WSBootIcon type="computer" size={16} />
         </button>
-        <button className="desktop-icon-button flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20" title="Internet Explorer">
+        <button
+          className="flex h-[20px] w-[20px] items-center justify-center hover:bg-white/20 active:translate-x-px active:translate-y-px"
+          title="Internet Explorer"
+          onClick={() => onQuickLaunch?.("internet")}
+        >
           <WSBootIcon type="ie" size={16} />
         </button>
       </div>

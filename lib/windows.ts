@@ -2,9 +2,11 @@ import type { ReactNode } from "react";
 
 export type WindowId =
   | "about"
+  | "calculator"
   | "computer"
   | "internet"
   | "ie-browser"
+  | "msdos"
   | "projects"
   | "contact"
   | "games"
@@ -52,9 +54,11 @@ export type WindowComponentProps = {
 
 export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   about: { id: "about", title: "About Me", icon: "computer", width: 520, height: 430 },
+  calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 320 },
   computer: { id: "computer", title: "My Computer", icon: "computer", width: 660, height: 450 },
   internet: { id: "internet", title: "Connecting to WSBoot Net...", icon: "ie", width: 380, height: 340 },
   "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 760, height: 520 },
+  msdos: { id: "msdos", title: "MS-DOS Prompt", icon: "prompt", width: 640, height: 400 },
   projects: { id: "projects", title: "Projects", icon: "folder", width: 720, height: 500 },
   contact: { id: "contact", title: "Contact", icon: "mail", width: 500, height: 380 },
   games: { id: "games", title: "Games", icon: "joystick", width: 760, height: 560 },
@@ -89,10 +93,10 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "documents", label: "My Documents", icon: "documents", windowId: "projects" },
   { id: "winamp", label: "Winamp", icon: "winamp", windowId: "music" },
   { id: "recycle", label: "Recycle Bin", icon: "trash", message: "Recycle Bin is empty. Very responsible." },
-  { id: "prompt", label: "MS-DOS Prompt", icon: "prompt", windowId: "run" },
+  { id: "prompt", label: "MS-DOS Prompt", icon: "prompt", windowId: "msdos" },
   { id: "paint", label: "Paint", icon: "paint", windowId: "paint" },
   { id: "doom", label: "Doom", icon: "doom", windowId: "games" },
-  { id: "calculator", label: "Calculator", icon: "calculator", message: "Calculator says 98 + vibes = WSBoot." },
+  { id: "calculator", label: "Calculator", icon: "calculator", windowId: "calculator" },
   { id: "pictures", label: "My Pictures", icon: "folder", windowId: "projects" },
   { id: "themes", label: "Themes", icon: "folder", windowId: "settings" },
   { id: "pinball", label: "Pinball", icon: "pinball", windowId: "games" },

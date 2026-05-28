@@ -29,9 +29,9 @@ export function StartMenu({ onOpen, onScreensaver, onShutdown }: Props) {
       onClick={(event) => event.stopPropagation()}
     >
       {/* Side banner */}
-      <div className="flex w-[26px] items-end justify-center bg-[#000080]" style={{ paddingBottom: "8px" }}>
+      <div className="flex w-[26px] items-end justify-center bg-[#000080]" style={{ paddingBottom: "24px" }}>
         <div className="-rotate-90 whitespace-nowrap text-[12px] font-bold tracking-wider">
-          <span className="text-[#b0b0b0]">WS</span><span className="text-white">Boot</span>
+          <span className="text-[#b0b0b0]">ws</span><span className="text-white">boot</span>
         </div>
       </div>
 

@@ -338,11 +338,10 @@ button {
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  width: 16px;
+  width: 14px;
   height: 14px;
   gap: 1px;
-  border-left: 1px solid #000;
-  transform: skew(-7deg);
+  transform: perspective(40px) rotateY(-5deg);
 }
 
 .start-logo span:nth-child(1) { background: #ff0000; }

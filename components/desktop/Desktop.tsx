@@ -9,11 +9,13 @@ import { StartMenu } from "./StartMenu";
 import { Taskbar } from "./Taskbar";
 import { WindowFrame } from "@/components/windows/WindowFrame";
 import { AboutWindow } from "@/components/windows/AboutWindow";
+import { CalculatorWindow } from "@/components/windows/CalculatorWindow";
 import { ComputerWindow } from "@/components/windows/ComputerWindow";
 import { ContactWindow } from "@/components/windows/ContactWindow";
 import { GamesWindow } from "@/components/windows/GamesWindow";
 import { InternetWindow } from "@/components/windows/InternetWindow";
 import { IEBrowserWindow } from "@/components/windows/IEBrowserWindow";
+import { MsDosWindow } from "@/components/windows/MsDosWindow";
 import { MusicWindow } from "@/components/windows/MusicWindow";
 import { NortonCommanderWindow } from "@/components/windows/NortonCommanderWindow";
 import { PaintWindow } from "@/components/windows/PaintWindow";
@@ -118,6 +120,7 @@ function nearestFreeGridPosition(id: string, x: number, y: number, positions: Re
 export default function Desktop() {
   const [booted, setBooted] = useState(false);
   const [bootMode, setBootMode] = useState<BootMode>("normal");
+  const [dialupDone, setDialupDone] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<MenuState>(null);
   const [startOpen, setStartOpen] = useState(false);
@@ -149,6 +152,26 @@ export default function Desktop() {
     [playSound, wm],
   );
 
+  const openInternet = useCallback(() => {
+    if (dialupDone) {
+      openWindow("ie-browser");
+    } else {
+      openWindow("internet");
+      setDialupDone(true);
+    }
+  }, [dialupDone, openWindow]);
+
+  const handleQuickLaunch = useCallback(
+    (id: string) => {
+      if (id === "internet") {
+        openInternet();
+      } else {
+        openWindow(id as WindowId);
+      }
+    },
+    [openInternet, openWindow],
+  );
+
   const iconClick = useDoubleClick<string>(
     (id) => {
       setSelectedIcon(id);
@@ -157,8 +180,13 @@ export default function Desktop() {
     (id) => {
       setSelectedIcon(id);
       const icon = desktopIcons.find((item) => item.id === id);
-      if (icon?.windowId) openWindow(icon.windowId);
-      else {
+      if (icon?.windowId) {
+        if (icon.windowId === "internet") {
+          openInternet();
+        } else {
+          openWindow(icon.windowId);
+        }
+      } else {
         if (id === "recycle") playSound("recycle");
         notify(icon?.message ?? "Shortcut is resting on the desktop.");
       }
@@ -241,6 +269,8 @@ export default function Desktop() {
     switch (props.window.id) {
       case "about":
         return <AboutWindow {...props} />;
+      case "calculator":
+        return <CalculatorWindow {...props} />;
       case "computer":
         return <ComputerWindow {...props} />;
       case "projects":
@@ -253,6 +283,8 @@ export default function Desktop() {
         return <InternetWindow {...props} />;
       case "ie-browser":
         return <IEBrowserWindow {...props} />;
+      case "msdos":
+        return <MsDosWindow {...props} />;
       case "games":
         return <GamesWindow {...props} />;
       case "music":
@@ -445,6 +477,7 @@ export default function Desktop() {
         }}
         onTask={(instanceId) => wm.focusWindow(instanceId)}
         onToggleMute={() => setMuted((value) => !value)}
+        onQuickLaunch={handleQuickLaunch}
       />
 
       {shutdownOpen && (
@@ -454,6 +487,7 @@ export default function Desktop() {
             setShutdownOpen(false);
             setBooted(false);
             setBootMode("normal");
+            setDialupDone(false);
             setSafeToTurnOff(false);
           }}
           onShutdown={() => {
