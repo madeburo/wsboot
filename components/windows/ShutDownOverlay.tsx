@@ -125,10 +125,7 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
         <div className="p-[12px]">
           <div className="flex gap-[12px] mb-[16px]">
             <div className="flex-shrink-0">
-              <svg width="32" height="32" viewBox="0 0 32 32">
-                <circle cx="16" cy="16" r="14" fill="#c0c0c0" stroke="#000" strokeWidth="1"/>
-                <text x="16" y="22" textAnchor="middle" fontSize="20" fontWeight="bold" fill="#000">?</text>
-              </svg>
+              <img src="/icons/shutdown.png" alt="" width={32} height={32} style={{ imageRendering: "pixelated" }} draggable={false} />
             </div>
             <div className="text-[11px]">
               <p className="mb-[8px]">What do you want the computer to do?</p>
