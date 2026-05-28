@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 export type WindowId =
   | "about"
   | "computer"
+  | "internet"
+  | "ie-browser"
   | "projects"
   | "contact"
   | "games"
@@ -51,6 +53,8 @@ export type WindowComponentProps = {
 export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   about: { id: "about", title: "About Me", icon: "computer", width: 520, height: 430 },
   computer: { id: "computer", title: "My Computer", icon: "computer", width: 660, height: 450 },
+  internet: { id: "internet", title: "Connecting to WSBoot Net...", icon: "ie", width: 380, height: 340 },
+  "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 760, height: 520 },
   projects: { id: "projects", title: "Projects", icon: "folder", width: 720, height: 500 },
   contact: { id: "contact", title: "Contact", icon: "mail", width: 500, height: 380 },
   games: { id: "games", title: "Games", icon: "joystick", width: 760, height: 560 },
@@ -81,7 +85,7 @@ export type DesktopIconDefinition = {
 
 export const desktopIcons: DesktopIconDefinition[] = [
   { id: "computer", label: "My Computer", icon: "computer", windowId: "computer" },
-  { id: "internet", label: "Internet Explorer", icon: "ie", windowId: "contact" },
+  { id: "internet", label: "Internet Explorer", icon: "ie", windowId: "internet" },
   { id: "documents", label: "My Documents", icon: "documents", windowId: "projects" },
   { id: "winamp", label: "Winamp", icon: "winamp", windowId: "music" },
   { id: "recycle", label: "Recycle Bin", icon: "trash", message: "Recycle Bin is empty. Very responsible." },

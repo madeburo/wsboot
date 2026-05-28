@@ -12,6 +12,8 @@ import { AboutWindow } from "@/components/windows/AboutWindow";
 import { ComputerWindow } from "@/components/windows/ComputerWindow";
 import { ContactWindow } from "@/components/windows/ContactWindow";
 import { GamesWindow } from "@/components/windows/GamesWindow";
+import { InternetWindow } from "@/components/windows/InternetWindow";
+import { IEBrowserWindow } from "@/components/windows/IEBrowserWindow";
 import { MusicWindow } from "@/components/windows/MusicWindow";
 import { NortonCommanderWindow } from "@/components/windows/NortonCommanderWindow";
 import { PaintWindow } from "@/components/windows/PaintWindow";
@@ -156,7 +158,10 @@ export default function Desktop() {
       setSelectedIcon(id);
       const icon = desktopIcons.find((item) => item.id === id);
       if (icon?.windowId) openWindow(icon.windowId);
-      else notify(icon?.message ?? "Shortcut is resting on the desktop.");
+      else {
+        if (id === "recycle") playSound("recycle");
+        notify(icon?.message ?? "Shortcut is resting on the desktop.");
+      }
     },
   );
 
@@ -244,6 +249,10 @@ export default function Desktop() {
         return <ProjectDetailsWindow {...props} />;
       case "contact":
         return <ContactWindow {...props} />;
+      case "internet":
+        return <InternetWindow {...props} />;
+      case "ie-browser":
+        return <IEBrowserWindow {...props} />;
       case "games":
         return <GamesWindow {...props} />;
       case "music":
@@ -447,7 +456,10 @@ export default function Desktop() {
             setBootMode("normal");
             setSafeToTurnOff(false);
           }}
-          onShutdown={() => setSafeToTurnOff(true)}
+          onShutdown={() => {
+            playSound("shutdown");
+            setSafeToTurnOff(true);
+          }}
           onCancel={() => setShutdownOpen(false)}
         />
       )}
