@@ -3,66 +3,51 @@
 import { useState } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
-const BOOKMARKS = [
-  { title: "WSBoot - Home", url: "www.wsboot.com" },
-  { title: "Projects", url: "www.wsboot.com/projects" },
-];
+const WAYBACK_PREFIX = "https://web.archive.org/web/1998/";
+const HOME_URL = "https://www.aol.com/";
 
-const PAGES: Record<string, { title: string; content: React.ReactNode }> = {
-  "www.wsboot.com": {
-    title: "WSBoot - Home",
-    content: (
-      <div className="p-4 font-[serif] text-[14px]">
-        <h1 className="text-[20px] font-bold text-[#000080] mb-2">Welcome to WSBoot</h1>
-        <hr className="border-[#808080] mb-3" />
-        <p className="mb-2">A Windows 98-inspired retro web desktop.</p>
-        <p className="mb-2">Play Doom, Minesweeper, Solitaire. Use Winamp, Paint, Norton Commander.</p>
-        <br />
-        <p className="text-[12px] text-[#808080]">Best viewed with Internet Explorer 5.0 at 800x600</p>
-      </div>
-    ),
-  },
-  "www.wsboot.com/projects": {
-    title: "Projects - WSBoot",
-    content: (
-      <div className="p-4 font-[serif] text-[14px]">
-        <h1 className="text-[20px] font-bold text-[#000080] mb-2">Projects</h1>
-        <hr className="border-[#808080] mb-3" />
-        <ul className="list-disc pl-5">
-          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">WSBoot</span> - Retro web desktop</li>
-          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">OpenModels</span> - AI model catalog</li>
-          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">OneBit</span> - Minimal product experiments</li>
-          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">TitanBase</span> - Technical knowledge workspace</li>
-        </ul>
-      </div>
-    ),
-  },
-};
+function toWaybackUrl(url: string): string {
+  // If already a wayback URL, return as-is
+  if (url.startsWith("https://web.archive.org/")) return url;
+  // Strip protocol if present
+  let cleanUrl = url.trim();
+  // Block dangerous URL schemes
+  const lower = cleanUrl.toLowerCase();
+  if (lower.startsWith("javascript:") || lower.startsWith("data:") || lower.startsWith("blob:") || lower.startsWith("vbscript:")) {
+    return WAYBACK_PREFIX + "https://www.aol.com/";
+  }
+  if (!cleanUrl.startsWith("http://") && !cleanUrl.startsWith("https://")) {
+    cleanUrl = "https://" + cleanUrl;
+  }
+  return WAYBACK_PREFIX + cleanUrl;
+}
 
-const HOME_URL = "www.wsboot.com";
+function getDisplayUrl(url: string): string {
+  // Show the original URL in address bar (without wayback prefix)
+  if (url.startsWith(WAYBACK_PREFIX)) {
+    return url.slice(WAYBACK_PREFIX.length);
+  }
+  return url;
+}
 
 export function IEBrowserWindow({ playSound }: WindowComponentProps) {
   const [address, setAddress] = useState(HOME_URL);
-  const [currentUrl, setCurrentUrl] = useState(HOME_URL);
-  const [history, setHistory] = useState<string[]>([HOME_URL]);
+  const [currentUrl, setCurrentUrl] = useState(toWaybackUrl(HOME_URL));
+  const [history, setHistory] = useState<string[]>([toWaybackUrl(HOME_URL)]);
   const [historyIndex, setHistoryIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [statusText, setStatusText] = useState("Done");
+  const [loading, setLoading] = useState(true);
+  const [statusText, setStatusText] = useState("Opening page...");
 
   const navigate = (url: string) => {
+    const waybackUrl = toWaybackUrl(url);
     setLoading(true);
     setStatusText(`Opening page ${url}...`);
+    setCurrentUrl(waybackUrl);
+    setAddress(getDisplayUrl(waybackUrl));
+    const newHistory = [...history.slice(0, historyIndex + 1), waybackUrl];
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
     playSound("click");
-
-    setTimeout(() => {
-      setCurrentUrl(url);
-      setAddress(url);
-      const newHistory = [...history.slice(0, historyIndex + 1), url];
-      setHistory(newHistory);
-      setHistoryIndex(newHistory.length - 1);
-      setLoading(false);
-      setStatusText("Done");
-    }, 400 + Math.random() * 600);
   };
 
   const goBack = () => {
@@ -70,7 +55,9 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
       const newIndex = historyIndex - 1;
       setHistoryIndex(newIndex);
       setCurrentUrl(history[newIndex]);
-      setAddress(history[newIndex]);
+      setAddress(getDisplayUrl(history[newIndex]));
+      setLoading(true);
+      setStatusText("Opening page...");
       playSound("click");
     }
   };
@@ -80,7 +67,9 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
       const newIndex = historyIndex + 1;
       setHistoryIndex(newIndex);
       setCurrentUrl(history[newIndex]);
-      setAddress(history[newIndex]);
+      setAddress(getDisplayUrl(history[newIndex]));
+      setLoading(true);
+      setStatusText("Opening page...");
       playSound("click");
     }
   };
@@ -89,8 +78,6 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
     const url = address.trim();
     if (url) navigate(url);
   };
-
-  const page = PAGES[currentUrl];
 
   return (
     <div className="flex flex-col h-full bg-[#c0c0c0] text-[11px]">
@@ -130,7 +117,7 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
           <span className="text-[10px]">Stop</span>
         </button>
         <button
-          onClick={() => navigate(currentUrl)}
+          onClick={() => navigate(getDisplayUrl(currentUrl))}
           className="flex flex-col items-center justify-center w-[50px] h-[42px] hover:bg-[#dfdfdf] cursor-default"
         >
           <span className="text-[14px]">🔄</span>
@@ -152,10 +139,6 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
           <span className="text-[14px]">⭐</span>
           <span className="text-[10px]">Favorites</span>
         </button>
-        <button className="flex flex-col items-center justify-center w-[48px] h-[42px] hover:bg-[#dfdfdf] cursor-default">
-          <span className="text-[14px]">📋</span>
-          <span className="text-[10px]">History</span>
-        </button>
       </div>
 
       {/* Address bar */}
@@ -165,6 +148,7 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
           <span className="text-[12px] mr-1">🌐</span>
           <input
             className="flex-1 h-full bg-transparent outline-none text-[11px]"
+            style={{ color: "#000" }}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleGo(); }}
@@ -172,32 +156,30 @@ export function IEBrowserWindow({ playSound }: WindowComponentProps) {
         </div>
         <button
           onClick={handleGo}
-          className="h-[18px] px-2 border border-[#808080] bg-[#c0c0c0] text-[10px] hover:bg-[#dfdfdf] active:border-inset"
+          className="h-[18px] px-2 border border-[#808080] bg-[#c0c0c0] text-[10px] hover:bg-[#dfdfdf]"
+          style={{ background: "#c0c0c0" }}
         >
           ↗ Go
         </button>
-        <span className="text-[10px] ml-1 text-[#808080]">|</span>
-        <span className="text-[10px] ml-1">Links »</span>
       </div>
 
-      {/* Content area */}
-      <div className="flex-1 bg-white overflow-auto border-t border-[#dfdfdf]">
-        {loading ? (
-          <div className="flex items-center justify-center h-full">
+      {/* Content area - iframe */}
+      <div className="flex-1 bg-white overflow-hidden relative">
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
             <div className="text-[12px] text-[#808080] animate-pulse">Loading...</div>
           </div>
-        ) : page ? (
-          page.content
-        ) : (
-          <div className="p-4 font-[serif] text-[14px]">
-            <h1 className="text-[16px] font-bold text-[#000080] mb-2">
-              The page cannot be displayed
-            </h1>
-            <hr className="border-[#808080] mb-3" />
-            <p className="mb-2">The page you are looking for is currently unavailable.</p>
-            <p className="text-[12px] text-[#808080]">Internet Explorer</p>
-          </div>
         )}
+        <iframe
+          src={currentUrl}
+          className="w-full h-full border-0"
+          sandbox="allow-scripts allow-forms"
+          onLoad={() => {
+            setLoading(false);
+            setStatusText("Done");
+          }}
+          title="Internet Explorer"
+        />
       </div>
 
       {/* Status bar */}

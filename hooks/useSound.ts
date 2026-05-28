@@ -8,6 +8,7 @@ export function useSound() {
   const [muted, setMuted] = useState(false);
   const audioContext = useRef<AudioContext | null>(null);
   const audioCache = useRef<Record<string, HTMLAudioElement>>({});
+  const fadeTimers = useRef<Set<ReturnType<typeof setInterval>>>(new Set());
 
   useEffect(() => {
     const enable = () => setEnabled(true);
@@ -16,6 +17,9 @@ export function useSound() {
     return () => {
       window.removeEventListener("pointerdown", enable);
       window.removeEventListener("keydown", enable);
+      // Clean up any running fade intervals
+      fadeTimers.current.forEach((timer) => clearInterval(timer));
+      fadeTimers.current.clear();
     };
   }, []);
 
@@ -69,10 +73,12 @@ export function useSound() {
           audio.volume = 0;
           audio.pause();
           clearInterval(timer);
+          fadeTimers.current.delete(timer);
         } else {
           audio.volume -= volumeStep;
         }
       }, interval);
+      fadeTimers.current.add(timer);
     },
     [],
   );

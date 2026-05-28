@@ -1,4 +1,5 @@
 const CACHE_NAME = "wsboot-v1";
+const MAX_CACHE_SIZE = 50;
 const OFFLINE_URLS = [
   "/",
   "/favicon.ico",
@@ -24,17 +25,33 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch — network first, fallback to cache
+// Trim cache to prevent unbounded growth
+async function trimCache(cacheName, maxItems) {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  if (keys.length > maxItems) {
+    await cache.delete(keys[0]);
+    await trimCache(cacheName, maxItems);
+  }
+}
+
+// Fetch — network first, fallback to cache (same-origin only)
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  // Only cache same-origin requests
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Cache successful responses
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
+            trimCache(CACHE_NAME, MAX_CACHE_SIZE);
+          });
         }
         return response;
       })

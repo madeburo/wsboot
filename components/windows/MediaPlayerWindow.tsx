@@ -103,10 +103,11 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
           <>
             <video
               ref={videoRef}
-              src={videoFile}
               autoPlay
               muted
               playsInline
+              loop
+              preload="auto"
               className="w-full h-full object-contain"
               onTimeUpdate={handleTimeUpdate}
               onEnded={() => setPlaying(false)}
@@ -116,7 +117,9 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
               }}
               onPlay={() => setPlaying(true)}
               onPause={() => setPlaying(false)}
-            />
+            >
+              <source src={videoFile} type="video/mp4" />
+            </video>
             {muted && (
               <button
                 className="absolute top-2 right-2 px-3 py-1 text-[11px]"

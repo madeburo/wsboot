@@ -123,6 +123,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link
           href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"
+          crossOrigin="anonymous"
         />
         <script
           type="application/ld+json"

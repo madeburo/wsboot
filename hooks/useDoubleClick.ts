@@ -1,9 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export function useDoubleClick<T>(single: (value: T) => void, double: (value: T) => void, delay = 240) {
   const clickTimer = useRef<number | null>(null);
+
+  // Clean up pending timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (clickTimer.current) {
+        window.clearTimeout(clickTimer.current);
+        clickTimer.current = null;
+      }
+    };
+  }, []);
 
   return (value: T) => {
     if (clickTimer.current) {
