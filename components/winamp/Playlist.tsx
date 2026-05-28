@@ -1,20 +1,70 @@
 "use client";
 
-const tracks = ["boot_sector_dreams.mod", "teal_desktop_radio.xm", "floppy_afterhours.it", "system_ready.wav"];
+import type { WinampTrack } from "./WinampPlayer";
 
-export function Playlist({ active, onSelect }: { active: number; onSelect: (index: number) => void }) {
+type Props = {
+  tracks: WinampTrack[];
+  currentTrack: number;
+  onSelect: (index: number) => void;
+  elapsed: number;
+  totalTime: string;
+};
+
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+export function WinampPlaylist({ tracks, currentTrack, onSelect, elapsed, totalTime }: Props) {
   return (
-    <div className="h-[132px] overflow-auto border border-[#000] bg-[#050505] p-[5px] font-mono text-[10px] text-[#39ff14]">
-      <div className="mb-[4px] border-b border-[#3a3a3a] pb-[2px] text-center text-[9px] text-white">WINAMP PLAYLIST</div>
-      {tracks.map((track, index) => (
-        <button
-          key={track}
-          className={`block w-full px-1 text-left leading-[17px] ${active === index ? "bg-[#000080] text-white" : ""}`}
-          onClick={() => onSelect(index)}
-        >
-          {String(index + 1).padStart(2, "0")}. {track} <span className="float-right">0:05</span>
-        </button>
-      ))}
+    <div className="winamp-pl w-[275px] mt-0">
+      {/* Playlist Title bar */}
+      <div className="winamp-pl-titlebar flex items-center justify-between h-[14px] px-[3px]">
+        <span className="text-[8px] font-bold tracking-wider winamp-text-green">WINAMP PLAYLIST</span>
+        <button className="winamp-tiny-btn" aria-label="Close Playlist">×</button>
+      </div>
+
+      {/* Track list */}
+      <div className="winamp-pl-body">
+        <div className="winamp-pl-list">
+          {tracks.map((track, index) => (
+            <button
+              key={index}
+              className={`winamp-pl-item ${index === currentTrack ? "active" : ""}`}
+              onClick={() => onSelect(index)}
+            >
+              <span className="winamp-pl-item-num">{index + 1}.</span>
+              <span className="winamp-pl-item-title truncate">
+                {track.artist} - {track.title}
+              </span>
+              <span className="winamp-pl-item-duration">
+                {formatDuration(track.duration)}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Bottom controls */}
+        <div className="winamp-pl-controls">
+          <div className="flex gap-[2px]">
+            <button className="winamp-pl-btn">ADD</button>
+            <button className="winamp-pl-btn">REM</button>
+            <button className="winamp-pl-btn">SEL</button>
+            <button className="winamp-pl-btn">MISC</button>
+          </div>
+
+          <div className="winamp-pl-time font-mono">
+            <span className="winamp-text-green text-[9px]">
+              {formatDuration(elapsed)}/{totalTime}
+            </span>
+          </div>
+
+          <div className="flex gap-[2px]">
+            <button className="winamp-pl-btn">LIST OPTS</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -68,7 +68,7 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   outlook: { id: "outlook", title: "Outlook Express", icon: "msoutlook", width: 720, height: 500 },
   projects: { id: "projects", title: "Projects", icon: "folder", width: 720, height: 500 },
   games: { id: "games", title: "Games", icon: "joystick", width: 760, height: 560 },
-  music: { id: "music", title: "Winamp", icon: "winamp", width: 310, height: 470 },
+  music: { id: "music", title: "Winamp", icon: "winamp", width: 290, height: 560 },
   norton: { id: "norton", title: "Norton Commander", icon: "norton", width: 760, height: 500 },
   paint: { id: "paint", title: "untitled - Paint", icon: "paint", width: 760, height: 500 },
   screensaver: { id: "screensaver", title: "Screensaver", icon: "monitor", width: 460, height: 330 },
