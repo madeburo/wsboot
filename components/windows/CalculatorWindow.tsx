@@ -155,36 +155,38 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
     label: string;
     onClick: () => void;
     color?: string;
-  }) => (
-    <button
-      onClick={onClick}
-      className="calc-btn flex items-center justify-center cursor-default select-none"
-      style={{
-        background: "#c0c0c0",
-        color,
-        fontSize: "13px",
-        height: "28px",
-      }}
-    >
-      {label}
-    </button>
-  );
+  }) => {
+    const [pressed, setPressed] = useState(false);
+    return (
+      <button
+        onClick={onClick}
+        onPointerDown={() => setPressed(true)}
+        onPointerUp={() => setPressed(false)}
+        onPointerLeave={() => setPressed(false)}
+        className="flex items-center justify-center cursor-default select-none"
+        style={{
+          background: "#c0c0c0",
+          border: "2px solid",
+          borderColor: pressed
+            ? "#808080 #ffffff #ffffff #808080"
+            : "#ffffff #808080 #808080 #ffffff",
+          boxShadow: pressed
+            ? "inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #dfdfdf"
+            : "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
+          color,
+          fontSize: "13px",
+          height: "28px",
+          paddingTop: pressed ? "1px" : "0px",
+          paddingLeft: pressed ? "1px" : "0px",
+        }}
+      >
+        {label}
+      </button>
+    );
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#c0c0c0]">
-      <style>{`
-        .calc-btn {
-          border: 2px solid;
-          border-color: #ffffff #808080 #808080 #ffffff;
-          box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a;
-        }
-        .calc-btn:active {
-          border-color: #808080 #ffffff #ffffff #808080;
-          box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #dfdfdf;
-          padding-top: 1px;
-          padding-left: 1px;
-        }
-      `}</style>
       {/* Menu bar */}
       <div className="flex items-center h-[20px] px-1 text-[11px] border-b border-[#808080]">
         <span className="px-2 cursor-default hover:bg-[#000080] hover:text-white"><u>E</u>dit</span>
@@ -220,33 +222,9 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
           >
             {hasMemory ? "M" : ""}
           </div>
-          <button
-            onClick={backspace}
-            className="calc-btn h-[28px] flex items-center justify-center cursor-default select-none text-[11px] text-[#800000]"
-            style={{
-              background: "#c0c0c0",
-            }}
-          >
-            Backspace
-          </button>
-          <button
-            onClick={clearEntry}
-            className="calc-btn h-[28px] flex items-center justify-center cursor-default select-none text-[11px] text-[#800000]"
-            style={{
-              background: "#c0c0c0",
-            }}
-          >
-            CE
-          </button>
-          <button
-            onClick={clear}
-            className="calc-btn h-[28px] flex items-center justify-center cursor-default select-none text-[11px] text-[#800000]"
-            style={{
-              background: "#c0c0c0",
-            }}
-          >
-            C
-          </button>
+          <CalcButton label="Backspace" onClick={backspace} color="#800000" />
+          <CalcButton label="CE" onClick={clearEntry} color="#800000" />
+          <CalcButton label="C" onClick={clear} color="#800000" />
         </div>
 
         {/* Main grid: 4 rows x 6 cols */}
