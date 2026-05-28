@@ -115,7 +115,7 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "minesweeper", label: "Minesweeper", icon: "mine", windowId: "games" },
   { id: "solitaire", label: "Solitaire", icon: "cards", windowId: "games" },
   { id: "notepad", label: "Notepad", icon: "notepad", windowId: "notepad" },
-  { id: "legend", label: "legend", icon: "video", windowId: "mediaplayer", payload: "Rick Astley - Never Gonna Give You Up" },
   { id: "outlook", label: "Outlook Express", icon: "msoutlook", windowId: "outlook" },
+  { id: "legend", label: "legend", icon: "video", windowId: "mediaplayer", payload: "Rick Astley - Never Gonna Give You Up" },
   { id: "share", label: "Share", icon: "share", windowId: "share" },
 ];

@@ -98,7 +98,7 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
       {/* Menu bar */}
       <div className="window-menu-bar">
         {Object.keys(menuItems).map((menu) => (
-          <div key={menu} className="relative">
+          <div key={menu} className="relative" style={{ display: "inline-block" }}>
             <button
               className="window-menu-item"
               onClick={(e) => {
@@ -114,6 +114,7 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
             {openMenu === menu && (
               <div
                 className="absolute left-0 top-full z-50 min-w-[160px] border border-[#808080] bg-[#c0c0c0] py-[2px] shadow-md"
+                style={{ display: "flex", flexDirection: "column" }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {menuItems[menu].map((item, i) => (
@@ -136,7 +137,7 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
         ))}
 
         {/* Word Wrap toggle in Format-like position */}
-        <div className="relative">
+        <div className="relative" style={{ display: "inline-block" }}>
           <button
             className="window-menu-item"
             onClick={(e) => {
@@ -152,6 +153,7 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
           {openMenu === "Format" && (
             <div
               className="absolute left-0 top-full z-50 min-w-[160px] border border-[#808080] bg-[#c0c0c0] py-[2px] shadow-md"
+              style={{ display: "flex", flexDirection: "column" }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -173,9 +175,11 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
       <div className="min-h-0 flex-1 p-0">
         <textarea
           ref={textareaRef}
-          className="h-full w-full resize-none border-0 bg-white p-1 text-[13px] text-black outline-none"
+          className="h-full w-full resize-none border-0 bg-white p-1 outline-none"
           style={{
             fontFamily: "\"Fixedsys\", \"Courier New\", monospace",
+            fontSize: "13px",
+            color: "#000000",
             whiteSpace: wordWrap ? "pre-wrap" : "pre",
             overflowWrap: wordWrap ? "break-word" : "normal",
             overflowX: wordWrap ? "hidden" : "auto",
