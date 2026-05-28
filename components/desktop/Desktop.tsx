@@ -11,6 +11,7 @@ import { WindowFrame } from "@/components/windows/WindowFrame";
 import { AboutWindow } from "@/components/windows/AboutWindow";
 import { CalculatorWindow } from "@/components/windows/CalculatorWindow";
 import { ComputerWindow } from "@/components/windows/ComputerWindow";
+import { DoomWindow } from "@/components/windows/DoomWindow";
 import { GamesWindow } from "@/components/windows/GamesWindow";
 import { InternetWindow } from "@/components/windows/InternetWindow";
 import { IEBrowserWindow } from "@/components/windows/IEBrowserWindow";
@@ -18,6 +19,7 @@ import { MsDosWindow } from "@/components/windows/MsDosWindow";
 import { MediaPlayerWindow } from "@/components/windows/MediaPlayerWindow";
 import { MusicWindow } from "@/components/windows/MusicWindow";
 import { NortonCommanderWindow } from "@/components/windows/NortonCommanderWindow";
+import { NotepadWindow } from "@/components/windows/NotepadWindow";
 import { OutlookWindow } from "@/components/windows/OutlookWindow";
 import { PaintWindow } from "@/components/windows/PaintWindow";
 import { ProjectDetailsWindow } from "@/components/windows/ProjectDetailsWindow";
@@ -308,10 +310,14 @@ export default function Desktop() {
         return <MediaPlayerWindow {...props} />;
       case "games":
         return <GamesWindow {...props} />;
+      case "doom":
+        return <DoomWindow {...props} />;
       case "music":
         return <MusicWindow {...props} />;
       case "norton":
         return <NortonCommanderWindow {...props} />;
+      case "notepad":
+        return <NotepadWindow {...props} />;
       case "outlook":
         return <OutlookWindow {...props} />;
       case "paint":
@@ -454,24 +460,58 @@ export default function Desktop() {
         ))}
       </div>
 
-      {wm.windows.map((item) => (
-        <WindowFrame
-          key={item.instanceId}
-          window={item}
-          active={wm.activeWindow?.instanceId === item.instanceId}
-          onFocus={() => wm.focusWindow(item.instanceId)}
-          onClose={() => {
-            wm.closeWindow(item.instanceId);
-            playSound("close");
-          }}
-          onMinimize={() => wm.minimizeWindow(item.instanceId)}
-          onMaximize={() => wm.maximizeWindow(item.instanceId)}
-          onMove={(x, y) => wm.moveWindow(item.instanceId, x, y)}
-          onResize={(width, height) => wm.resizeWindow(item.instanceId, width, height)}
-        >
-          {renderWindow({ window: item, ...commonProps })}
-        </WindowFrame>
-      ))}
+      {wm.windows.map((item) => {
+        // Winamp renders without standard Windows frame
+        if (item.id === "music") {
+          return (
+            <div
+              key={item.instanceId}
+              className={`fixed ${item.minimized ? "hidden" : ""}`}
+              style={{
+                left: item.maximized ? 0 : item.x,
+                top: item.maximized ? 0 : item.y,
+                zIndex: item.zIndex,
+              }}
+              onPointerDown={() => wm.focusWindow(item.instanceId)}
+            >
+              <div className="relative">
+                {/* Close button */}
+                <button
+                  className="absolute top-[3px] right-[3px] z-10 winamp-tiny-btn"
+                  onClick={() => {
+                    wm.closeWindow(item.instanceId);
+                    playSound("close");
+                  }}
+                  aria-label="Close Winamp"
+                  title="Close"
+                >
+                  ×
+                </button>
+                {renderWindow({ window: item, ...commonProps })}
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <WindowFrame
+            key={item.instanceId}
+            window={item}
+            active={wm.activeWindow?.instanceId === item.instanceId}
+            onFocus={() => wm.focusWindow(item.instanceId)}
+            onClose={() => {
+              wm.closeWindow(item.instanceId);
+              playSound("close");
+            }}
+            onMinimize={() => wm.minimizeWindow(item.instanceId)}
+            onMaximize={() => wm.maximizeWindow(item.instanceId)}
+            onMove={(x, y) => wm.moveWindow(item.instanceId, x, y)}
+            onResize={(width, height) => wm.resizeWindow(item.instanceId, width, height)}
+          >
+            {renderWindow({ window: item, ...commonProps })}
+          </WindowFrame>
+        );
+      })}
 
       {startOpen && (
         <StartMenu
