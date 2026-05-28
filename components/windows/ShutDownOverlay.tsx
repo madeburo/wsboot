@@ -7,7 +7,7 @@ const SHARE_TEXT = "Check out WSBoot — a Windows 98 desktop in your browser! �
 
 const shareLinks = [
   {
-    label: "X",
+    label: "Twitter",
     icon: "𝕏",
     href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`,
   },
