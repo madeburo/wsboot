@@ -4,12 +4,14 @@ import { useRef, useState, useCallback } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
 export function MediaPlayerWindow({ window: win, playSound }: WindowComponentProps) {
-  const videoFile = win.payload ? "/video/never-gonna-give-you-up.mp4" : null;
+  const hasVideo = !!win.payload;
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume] = useState(70);
+  const [useEmbed, setUseEmbed] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -27,10 +29,8 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
     video.play().then(() => {
       setPlaying(true);
     }).catch(() => {
-      // If unmuted play fails, try muted
-      video.muted = true;
-      setMuted(true);
-      video.play().then(() => setPlaying(true)).catch(() => {});
+      // If unmuted play fails, switch to YouTube embed
+      setUseEmbed(true);
     });
   }, []);
 
@@ -69,21 +69,14 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
     video.currentTime = pct * video.duration;
   };
 
-  const handleUnmute = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = false;
-    setMuted(false);
+  const handleVideoError = () => {
+    // If local video fails to load, switch to YouTube embed
+    setVideoError(true);
+    setUseEmbed(true);
   };
 
-  const handleCanPlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    setDuration(video.duration || 0);
-    if (!playing) {
-      setPlaying(true);
-    }
-  };
+  // YouTube embed URL (Rick Astley - Never Gonna Give You Up)
+  const youtubeEmbedUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0";
 
   return (
     <div className="flex flex-col h-full" style={{ background: "#c0c0c0" }}>
@@ -99,41 +92,77 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
 
       {/* Video/Display area */}
       <div className="flex-1 flex items-center justify-center mx-[3px] mt-[3px] relative overflow-hidden min-h-0" style={{ background: "#000" }}>
-        {videoFile ? (
-          <>
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              playsInline
-              loop
-              preload="auto"
-              className="w-full h-full object-contain"
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={() => setPlaying(false)}
-              onCanPlay={handleCanPlay}
-              onLoadedMetadata={() => {
-                if (videoRef.current) setDuration(videoRef.current.duration);
-              }}
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
-            >
-              <source src={videoFile} type="video/mp4" />
-            </video>
-            {muted && (
-              <button
-                className="absolute top-2 right-2 px-3 py-1 text-[11px]"
-                onClick={handleUnmute}
-                style={{
-                  background: "#c0c0c0",
-                  border: "none",
-                  boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf",
+        {hasVideo ? (
+          useEmbed || videoError ? (
+            /* YouTube embed fallback */
+            <iframe
+              src={youtubeEmbedUrl}
+              className="w-full h-full border-0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              title="Rick Astley - Never Gonna Give You Up"
+            />
+          ) : (
+            /* Native video player */
+            <>
+              <video
+                ref={videoRef}
+                autoPlay
+                muted={muted}
+                playsInline
+                loop
+                preload="auto"
+                className="w-full h-full object-contain cursor-pointer"
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.muted = false;
+                    setMuted(false);
+                  }
+                }}
+                onTimeUpdate={handleTimeUpdate}
+                onEnded={() => setPlaying(false)}
+                onCanPlay={() => {
+                  if (videoRef.current) {
+                    setDuration(videoRef.current.duration);
+                    setPlaying(true);
+                  }
+                }}
+                onLoadedMetadata={() => {
+                  if (videoRef.current) setDuration(videoRef.current.duration);
+                }}
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
+                onError={handleVideoError}
+                onStalled={() => {
+                  setTimeout(() => {
+                    if (videoRef.current && videoRef.current.readyState < 3) {
+                      setUseEmbed(true);
+                    }
+                  }, 5000);
                 }}
               >
-                🔊 Click for sound
-              </button>
-            )}
-          </>
+                <source src="/video/never-gonna-give-you-up.mp4" type="video/mp4" />
+              </video>
+              {muted && (
+                <div
+                  className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 text-[11px] cursor-pointer"
+                  onClick={() => {
+                    if (videoRef.current) {
+                      videoRef.current.muted = false;
+                      setMuted(false);
+                    }
+                  }}
+                  style={{
+                    background: "rgba(0,0,0,0.7)",
+                    color: "#fff",
+                    borderRadius: "3px",
+                  }}
+                >
+                  🔊 Click to enable sound
+                </div>
+              )}
+            </>
+          )
         ) : (
           <div className="relative">
             <svg width="120" height="100" viewBox="0 0 120 100" fill="none">
@@ -155,7 +184,7 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
       >
         <span className="text-[11px] mr-1">🎬</span>
         <span className="truncate flex-1" style={{ color: "#000" }}>{win.payload || "Windows Media Player"}</span>
-        {videoFile && duration > 0 && (
+        {hasVideo && !useEmbed && duration > 0 && (
           <span className="text-[9px] ml-2 shrink-0" style={{ color: "#808080" }}>
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
@@ -165,7 +194,7 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
       {/* Transport controls */}
       <div className="flex items-center gap-[2px] mx-[3px] mt-[3px] mb-[2px] px-[2px] h-[26px]">
         <button
-          onClick={play}
+          onClick={useEmbed ? undefined : play}
           className="win-button w-[26px] h-[22px] flex items-center justify-center text-[12px]"
           title="Play"
           style={{ background: "#c0c0c0" }}
@@ -173,7 +202,7 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
           ▶
         </button>
         <button
-          onClick={pause}
+          onClick={useEmbed ? undefined : pause}
           className="win-button w-[26px] h-[22px] flex items-center justify-center text-[11px]"
           title="Pause"
           style={{ background: "#c0c0c0" }}
@@ -181,7 +210,7 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
           ⏸
         </button>
         <button
-          onClick={stop}
+          onClick={useEmbed ? undefined : stop}
           className="win-button w-[26px] h-[22px] flex items-center justify-center text-[11px]"
           title="Stop"
           style={{ background: "#c0c0c0" }}
@@ -189,16 +218,7 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
           ⏹
         </button>
 
-        {/* Separator */}
-        <div className="w-[1px] h-[18px] mx-[2px]" style={{ borderLeft: "1px solid #808080", borderRight: "1px solid #ffffff" }} />
-
-        <button className="win-button w-[26px] h-[22px] flex items-center justify-center text-[10px]" title="Previous" style={{ background: "#c0c0c0" }}>⏮</button>
-        <button className="win-button w-[26px] h-[22px] flex items-center justify-center text-[10px]" title="Rewind" style={{ background: "#c0c0c0" }}>⏪</button>
-        <button className="win-button w-[26px] h-[22px] flex items-center justify-center text-[10px]" title="Fast Forward" style={{ background: "#c0c0c0" }}>⏩</button>
-        <button className="win-button w-[26px] h-[22px] flex items-center justify-center text-[10px]" title="Next" style={{ background: "#c0c0c0" }}>⏭</button>
-
-        {/* Separator */}
-        <div className="w-[1px] h-[18px] mx-[2px]" style={{ borderLeft: "1px solid #808080", borderRight: "1px solid #ffffff" }} />
+        <div className="flex-1" />
 
         {/* Volume */}
         <span className="text-[12px] ml-1">🔊</span>
@@ -208,16 +228,18 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
       </div>
 
       {/* Seek/Progress bar */}
-      <div
-        className="mx-[3px] mb-[3px] h-[10px] cursor-pointer relative"
-        style={{ boxShadow: "inset 1px 1px #808080, inset -1px -1px #dfdfdf", background: "#000" }}
-        onClick={handleSeek}
-      >
+      {!useEmbed && (
         <div
-          className="h-full"
-          style={{ width: `${progress}%`, background: "linear-gradient(to right, #000080, #1084d0)", transition: "width 0.1s" }}
-        />
-      </div>
+          className="mx-[3px] mb-[3px] h-[10px] cursor-pointer relative"
+          style={{ boxShadow: "inset 1px 1px #808080, inset -1px -1px #dfdfdf", background: "#000" }}
+          onClick={handleSeek}
+        >
+          <div
+            className="h-full"
+            style={{ width: `${progress}%`, background: "linear-gradient(to right, #000080, #1084d0)", transition: "width 0.1s" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
