@@ -17,7 +17,7 @@ const BIOS_LINES = [
   { text: "Memory Test : 65536K OK" },
   { text: "" },
   { text: "Press DEL to enter SETUP", dim: true },
-  { text: "Press F8 for boot menu", dim: true },
+  { text: "Press F8 or ESC for boot menu", dim: true },
   { text: "" },
   { text: "Award Plug and Play BIOS Extension v1.0A" },
   { text: "Detecting IDE Primary Master   ... WDC AC21600H" },
@@ -91,11 +91,11 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     return () => clearInterval(interval);
   }, [phase, f8Pressed, complete]);
 
-  // Listen for F8 during BIOS phase
+  // Listen for F8 or Escape during BIOS phase
   useEffect(() => {
     if (phase !== "bios") return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "F8") {
+      if (e.key === "F8" || e.key === "Escape") {
         e.preventDefault();
         setF8Pressed(true);
       }
