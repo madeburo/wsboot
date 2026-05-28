@@ -4,6 +4,7 @@ export type WindowId =
   | "about"
   | "calculator"
   | "computer"
+  | "defrag"
   | "internet"
   | "ie-browser"
   | "msdos"
@@ -16,6 +17,7 @@ export type WindowId =
   | "screensaver"
   | "run"
   | "settings"
+  | "share"
   | "project-details";
 
 export type DesktopWindow = {
@@ -56,6 +58,7 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   about: { id: "about", title: "About Me", icon: "computer", width: 520, height: 430 },
   calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 320 },
   computer: { id: "computer", title: "My Computer", icon: "computer", width: 660, height: 450 },
+  defrag: { id: "defrag", title: "Defragmenting Drive C", icon: "computer", width: 580, height: 420 },
   internet: { id: "internet", title: "Connecting to WSBoot Net...", icon: "ie", width: 380, height: 340 },
   "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 760, height: 520 },
   msdos: { id: "msdos", title: "MS-DOS Prompt", icon: "prompt", width: 640, height: 400 },
@@ -68,6 +71,7 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   screensaver: { id: "screensaver", title: "Screensaver", icon: "monitor", width: 460, height: 330 },
   run: { id: "run", title: "Run", icon: "run", width: 420, height: 210 },
   settings: { id: "settings", title: "Settings", icon: "settings", width: 520, height: 380 },
+  share: { id: "share", title: "Send to a Friend", icon: "mail", width: 380, height: 380 },
   "project-details": {
     id: "project-details",
     title: "Project Details",

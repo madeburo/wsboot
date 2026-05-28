@@ -76,16 +76,10 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
         const next = v + 1;
         if (next >= BIOS_LINES.length) {
           clearInterval(interval);
-          // If F8 wasn't pressed, auto-boot after short delay
-          if (!f8Pressed) {
-            setTimeout(() => {
-              setPhase("booting");
-              setTimeout(() => complete("normal"), 400);
-            }, 600);
-          }
-          return BIOS_LINES.length;
+          // If F8 was pressed, menu will show via separate effect
+          // Otherwise wait for user click/keypress to boot (ensures audio works)
         }
-        return next;
+        return Math.min(next, BIOS_LINES.length);
       });
     }, 80);
     return () => clearInterval(interval);
@@ -98,11 +92,15 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
       if (e.key === "F8" || e.key === "Escape") {
         e.preventDefault();
         setF8Pressed(true);
+      } else if (visibleLines >= BIOS_LINES.length && !f8Pressed) {
+        // Any other key after BIOS done = boot
+        setPhase("booting");
+        setTimeout(() => complete("normal"), 300);
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [phase]);
+  }, [phase, visibleLines, f8Pressed, complete]);
 
   // When BIOS finishes and F8 was pressed, show menu
   useEffect(() => {
@@ -174,7 +172,14 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
   return (
     <div
       ref={containerRef}
-      className="flex h-screen w-screen flex-col items-start overflow-hidden bg-black p-4 font-mono text-[14px] leading-[20px] text-[#aaaaaa]"
+      onClick={() => {
+        // User interaction enables audio autoplay in browser
+        if (phase === "bios" && visibleLines >= BIOS_LINES.length && !f8Pressed) {
+          setPhase("booting");
+          setTimeout(() => complete("normal"), 300);
+        }
+      }}
+      className="flex h-screen w-screen flex-col items-start overflow-hidden bg-black p-4 font-mono text-[14px] leading-[20px] text-[#aaaaaa] cursor-default"
     >
       {/* BIOS lines */}
       {BIOS_LINES.slice(0, visibleLines).map((line, i) => (
@@ -193,6 +198,13 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
       {/* Cursor during BIOS */}
       {phase === "bios" && visibleLines < BIOS_LINES.length && (
         <span className="inline-block w-[8px] h-[14px] bg-[#aaaaaa] animate-pulse" />
+      )}
+
+      {/* Waiting for user interaction to boot */}
+      {phase === "bios" && visibleLines >= BIOS_LINES.length && !f8Pressed && (
+        <div className="mt-4 text-[#666666] animate-pulse">
+          Click or press any key to continue...
+        </div>
       )}
 
       {/* F8 Boot Menu */}

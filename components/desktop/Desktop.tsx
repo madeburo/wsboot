@@ -24,12 +24,16 @@ import { ProjectsWindow } from "@/components/windows/ProjectsWindow";
 import { RunWindow } from "@/components/windows/RunWindow";
 import { ScreensaverWindow } from "@/components/windows/ScreensaverWindow";
 import { SettingsWindow } from "@/components/windows/SettingsWindow";
+import { ShareWindow } from "@/components/windows/ShareWindow";
+import { DefragWindow } from "@/components/windows/DefragWindow";
 import { ShutDownOverlay } from "@/components/windows/ShutDownOverlay";
 import { ScreensaverOverlay } from "@/components/screensavers/ScreensaverOverlay";
+import { CornerWidget } from "./CornerWidget";
 import { useDoubleClick } from "@/hooks/useDoubleClick";
 import { useScreensaver } from "@/hooks/useScreensaver";
 import { useSound } from "@/hooks/useSound";
 import { useWindowManager } from "@/hooks/useWindowManager";
+import { useServiceWorker } from "@/hooks/useServiceWorker";
 import { desktopIcons, WindowComponentProps, WindowId } from "@/lib/windows";
 
 type MenuState = { x: number; y: number; target?: string } | null;
@@ -132,6 +136,7 @@ export default function Desktop() {
   const wm = useWindowManager();
   const { playSound, muted, setMuted } = useSound();
   const screensaver = useScreensaver(60000);
+  useServiceWorker();
 
   const notify = useCallback(
     (message: string) => {
@@ -297,6 +302,10 @@ export default function Desktop() {
         return <RunWindow {...props} />;
       case "settings":
         return <SettingsWindow {...props} />;
+      case "share":
+        return <ShareWindow {...props} />;
+      case "defrag":
+        return <DefragWindow {...props} />;
       case "screensaver":
         return <ScreensaverWindow {...props} />;
       default:
@@ -371,6 +380,9 @@ export default function Desktop() {
       }}
     >
       <div className="relative h-[calc(100vh-28px)]">
+        {/* Corner share widget */}
+        <CornerWidget onShare={() => openWindow("share")} />
+
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}

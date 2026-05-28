@@ -18,6 +18,7 @@ export function StartMenu({ onOpen, onScreensaver, onShutdown }: Props) {
     ["music", "Winamp", "winamp"],
     ["norton", "Norton Commander", "norton"],
     ["paint", "Paint", "paint"],
+    ["defrag", "Disk Defragmenter", "computer"],
   ];
 
   return (
