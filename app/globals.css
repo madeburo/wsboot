@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap");
 
 @font-face {
   font-family: "W95FA";
@@ -18,7 +17,7 @@
   --win-blue-2: #1084d0;
   --desktop: #008080;
   --font-wsboot: "W95FA", "Pixelated MS Sans Serif", "MS Sans Serif", "Tahoma", sans-serif;
-  --font-shutdown: "Pixelify Sans", cursive;
+  --font-shutdown: "Pixelify Sans", sans-serif;
 }
 
 * {

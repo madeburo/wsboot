@@ -38,8 +38,9 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         <button
           onPointerDown={stopControlDrag}
           onClick={onMinimize}
-          className="flex h-[16px] w-[16px] items-end justify-center bg-[#c0c0c0] pb-[2px]"
+          className="flex h-[16px] w-[16px] items-end justify-center pb-[2px]"
           style={{
+            background: "#c0c0c0",
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
           aria-label="Minimize"
@@ -50,8 +51,9 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         <button
           onPointerDown={stopControlDrag}
           onClick={onMaximize}
-          className="flex h-[16px] w-[16px] items-center justify-center bg-[#c0c0c0]"
+          className="flex h-[16px] w-[16px] items-center justify-center"
           style={{
+            background: "#c0c0c0",
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
           aria-label={window.maximized ? "Restore" : "Maximize"}
@@ -71,8 +73,9 @@ export function WindowTitleBar({ window, active, onMinimize, onMaximize, onClose
         <button
           onPointerDown={stopControlDrag}
           onClick={onClose}
-          className="flex h-[16px] w-[16px] items-center justify-center bg-[#c0c0c0]"
+          className="flex h-[16px] w-[16px] items-center justify-center"
           style={{
+            background: "#c0c0c0",
             boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
           }}
           aria-label="Close"

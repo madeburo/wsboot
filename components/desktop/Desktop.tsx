@@ -207,7 +207,7 @@ export default function Desktop() {
         if (icon.windowId === "internet") {
           openInternet();
         } else {
-          openWindow(icon.windowId);
+          openWindow(icon.windowId, icon.payload);
         }
       } else {
         if (id === "recycle") playSound("recycle");
@@ -369,7 +369,7 @@ export default function Desktop() {
       }
       if (event.key === "Enter" && selectedIcon) {
         const icon = desktopIcons.find((item) => item.id === selectedIcon);
-        if (icon?.windowId) openWindow(icon.windowId);
+        if (icon?.windowId) openWindow(icon.windowId, icon.payload);
         else if (icon?.message) notify(icon.message);
       }
     };
@@ -535,7 +535,7 @@ export default function Desktop() {
           onOpen={() => {
             const icon = desktopIcons.find((item) => item.id === contextMenu.target);
             if (icon?.windowId) {
-              openWindow(icon.windowId);
+              openWindow(icon.windowId, icon.payload);
             } else {
               notify(icon?.message ?? "Desktop properties are feeling nostalgic.");
             }

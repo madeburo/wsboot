@@ -49,7 +49,7 @@ export function useWindowManager() {
           {
             instanceId,
             id,
-            title: payload && id === "project-details" ? "Project Details" : definition.title,
+            title: payload && id === "project-details" ? "Project Details" : payload && id === "mediaplayer" ? `Windows Media Player - ${payload}` : definition.title,
             icon: definition.icon,
             x: mobile ? 8 : clamp(80 + offset, 8, viewportWidth - width - 8),
             y: mobile ? 8 : clamp(40 + offset, 8, viewportHeight - height - 36),
