@@ -48,6 +48,7 @@ export function useSound() {
         audioCache.current[name] ??= new Audio(src);
         const audio = audioCache.current[name];
         audio.currentTime = 0;
+        audio.volume = 1;
         audio.play().catch(() => playTone(name));
         return;
       }
@@ -56,7 +57,27 @@ export function useSound() {
     [enabled, muted, playTone],
   );
 
-  return { playSound, muted, setMuted, enabled };
+  const fadeOutSound = useCallback(
+    (name: string, duration = 1000) => {
+      const audio = audioCache.current[name];
+      if (!audio || audio.paused) return;
+      const steps = 20;
+      const interval = duration / steps;
+      const volumeStep = audio.volume / steps;
+      const timer = setInterval(() => {
+        if (audio.volume - volumeStep <= 0) {
+          audio.volume = 0;
+          audio.pause();
+          clearInterval(timer);
+        } else {
+          audio.volume -= volumeStep;
+        }
+      }, interval);
+    },
+    [],
+  );
+
+  return { playSound, fadeOutSound, muted, setMuted, enabled };
 }
 
 declare global {

@@ -37,10 +37,6 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
             <p>Python · FastAPI · TypeScript · NestJS · PostgreSQL · ClickHouse · Kafka · AWS · LLM / SLM workflows</p>
           </section>
           <section>
-            <h3 className="font-bold">Current focus</h3>
-            <p>Shipping humane AI workflows and interfaces that invite deep work instead of more tabs.</p>
-          </section>
-          <section>
             <h3 className="font-bold">Connect</h3>
             <p>
               <a

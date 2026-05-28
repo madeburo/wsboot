@@ -1,6 +1,6 @@
 {
   "name": "wsboot",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "private": true,
   "description": "A retro web desktop booting in browser.",
   "scripts": {

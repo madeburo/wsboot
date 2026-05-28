@@ -148,7 +148,7 @@ export default function Desktop() {
   const [iconPositions, setIconPositions] = useState<Record<string, IconPosition>>(() => initialIconPositions());
   const iconDrag = useRef<IconDrag>(null);
   const wm = useWindowManager();
-  const { playSound, muted, setMuted } = useSound();
+  const { playSound, fadeOutSound, muted, setMuted } = useSound();
   const screensaver = useScreensaver(60000);
   useServiceWorker();
 
@@ -380,9 +380,10 @@ export default function Desktop() {
       },
       notify,
       playSound,
+      fadeOutSound,
       startScreensaver: screensaver.start,
     }),
-    [notify, openWindow, playSound, screensaver.start, wm],
+    [notify, openWindow, playSound, fadeOutSound, screensaver.start, wm],
   );
 
   if (!booted) {
@@ -527,11 +528,10 @@ export default function Desktop() {
         <ShutDownOverlay
           safe={safeToTurnOff}
           onRestart={() => {
-            setShutdownOpen(false);
-            setBooted(false);
-            setBootMode("normal");
-            setDialupDone(false);
-            setSafeToTurnOff(false);
+            playSound("shutdown");
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
           }}
           onShutdown={() => {
             playSound("shutdown");

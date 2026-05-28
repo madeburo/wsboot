@@ -53,6 +53,7 @@ export type WindowComponentProps = {
   closeWindow: (instanceId: string) => void;
   notify: (message: string) => void;
   playSound: (sound: string) => void;
+  fadeOutSound?: (sound: string, duration?: number) => void;
   startScreensaver: (mode?: "pipes" | "stars") => void;
 };
 

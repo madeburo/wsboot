@@ -7,7 +7,7 @@ type ConnectionPhase = "idle" | "dialing" | "verifying" | "connected";
 
 const DIALUP_SOUNDS = ["dialup-01", "dialup-02", "dialup-03"] as const;
 
-export function InternetWindow({ window: win, closeWindow, openWindow, notify, playSound }: WindowComponentProps) {
+export function InternetWindow({ window: win, closeWindow, openWindow, notify, playSound, fadeOutSound }: WindowComponentProps) {
   const [phase, setPhase] = useState<ConnectionPhase>("idle");
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState("Ready to connect");
@@ -33,6 +33,11 @@ export function InternetWindow({ window: win, closeWindow, openWindow, notify, p
         setPhase("connected");
         setStatusText("Connected at 33,600 bps");
         setProgress(100);
+
+        // Fade out dialup sound
+        if (audioRef.current && fadeOutSound) {
+          fadeOutSound(audioRef.current, 1000);
+        }
 
         timerRef.current = setTimeout(() => {
           notify("Connected to WSBoot Net!");
@@ -177,6 +182,7 @@ export function InternetWindow({ window: win, closeWindow, openWindow, notify, p
         ) : phase === "connected" ? (
           <button
             onClick={() => {
+              if (audioRef.current && fadeOutSound) fadeOutSound(audioRef.current, 500);
               closeWindow(win.instanceId);
               openWindow("ie-browser");
             }}
@@ -188,6 +194,7 @@ export function InternetWindow({ window: win, closeWindow, openWindow, notify, p
           <button
             onClick={() => {
               if (timerRef.current) clearTimeout(timerRef.current);
+              if (audioRef.current && fadeOutSound) fadeOutSound(audioRef.current, 300);
               setPhase("idle");
               setProgress(0);
               setStatusText("Ready to connect");
