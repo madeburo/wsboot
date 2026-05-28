@@ -60,7 +60,7 @@ export type WindowComponentProps = {
 
 export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   about: { id: "about", title: "About Me", icon: "computer", width: 520, height: 430 },
-  calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 350 },
+  calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 280 },
   computer: { id: "computer", title: "My Computer", icon: "computer", width: 660, height: 450 },
   defrag: { id: "defrag", title: "Defragmenting Drive C", icon: "computer", width: 580, height: 420 },
   doom: { id: "doom", title: "Doom", icon: "doom", width: 700, height: 520 },
