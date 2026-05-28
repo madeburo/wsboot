@@ -2,12 +2,48 @@
 
 import { useState } from "react";
 
+const SHARE_URL = "https://www.wsboot.com";
+const SHARE_TEXT = "Check out WSBoot — a Windows 98 desktop in your browser! 💾";
+
+const shareLinks = [
+  {
+    label: "X",
+    icon: "𝕏",
+    href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`,
+  },
+  {
+    label: "Reddit",
+    icon: "🟠",
+    href: `https://www.reddit.com/submit?url=${encodeURIComponent(SHARE_URL)}&title=${encodeURIComponent("WSBoot — Windows 98 in your browser")}`,
+  },
+  {
+    label: "Telegram",
+    icon: "✈️",
+    href: `https://t.me/share/url?url=${encodeURIComponent(SHARE_URL)}&text=${encodeURIComponent(SHARE_TEXT)}`,
+  },
+  {
+    label: "Discord",
+    icon: "💬",
+    href: `https://discord.com/channels/@me`,
+  },
+  {
+    label: "LinkedIn",
+    icon: "💼",
+    href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SHARE_URL)}`,
+  },
+  {
+    label: "Email",
+    icon: "📧",
+    href: `mailto:?subject=${encodeURIComponent("Check out WSBoot!")}&body=${encodeURIComponent("Hey! Check out this Windows 98 desktop in your browser:\n\n" + SHARE_URL)}`,
+  },
+];
+
 export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { safe: boolean; onRestart: () => void; onShutdown: () => void; onCancel: () => void }) {
   const [selected, setSelected] = useState<"shutdown" | "restart">("shutdown");
 
   if (safe) {
     return (
-      <div className="fixed inset-0 z-[8000] flex items-center justify-center">
+      <div className="fixed inset-0 z-[8000] flex flex-col items-center justify-center">
         {/* Clouds background with dark overlay */}
         <div
           className="absolute inset-0"
@@ -15,12 +51,50 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
             backgroundImage: "url('/clouds.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            filter: "brightness(0.25)",
+            filter: "brightness(0.2)",
           }}
         />
-        <div className="relative text-center">
-          <div className="text-[28px] text-[#ffb000] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" style={{ fontFamily: "serif" }}>
+        {/* Main text - pixel font */}
+        <div className="relative text-center mb-12">
+          <div
+            className="text-[32px] text-[#ffb000] leading-relaxed"
+            style={{
+              fontFamily: "var(--font-wsboot)",
+              textShadow: "0 0 10px rgba(255, 176, 0, 0.4)",
+              imageRendering: "pixelated",
+            }}
+          >
             It&apos;s now safe to turn off<br/>your computer.
+          </div>
+        </div>
+
+        {/* Share section */}
+        <div className="relative text-center">
+          <p
+            className="text-[13px] text-[#a0a0a0] mb-4"
+            style={{ fontFamily: "var(--font-wsboot)" }}
+          >
+            Enjoyed WSBoot? Share it with friends:
+          </p>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            {shareLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target={link.label === "Email" ? "_self" : "_blank"}
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e]/80 border border-[#444] rounded hover:bg-[#2a2a4e] hover:border-[#ffb000] transition-colors text-[12px] text-[#d0d0d0] hover:text-[#ffb000]"
+                style={{ fontFamily: "var(--font-wsboot)" }}
+                onClick={() => {
+                  if (link.label === "Discord") {
+                    navigator.clipboard.writeText(SHARE_URL).catch(() => {});
+                  }
+                }}
+              >
+                <span className="text-[14px]">{link.icon}</span>
+                <span>{link.label}</span>
+              </a>
+            ))}
           </div>
         </div>
       </div>
