@@ -5,8 +5,7 @@ import type { WindowComponentProps } from "@/lib/windows";
 
 const BOOKMARKS = [
   { title: "WSBoot - Home", url: "www.wsboot.com" },
-  { title: "My Projects", url: "www.wsboot.com/projects" },
-  { title: "Contact", url: "www.wsboot.com/contact" },
+  { title: "Projects", url: "www.wsboot.com/projects" },
 ];
 
 const PAGES: Record<string, { title: string; content: React.ReactNode }> = {
@@ -27,24 +26,14 @@ const PAGES: Record<string, { title: string; content: React.ReactNode }> = {
     title: "Projects - WSBoot",
     content: (
       <div className="p-4 font-[serif] text-[14px]">
-        <h1 className="text-[20px] font-bold text-[#000080] mb-2">My Projects</h1>
+        <h1 className="text-[20px] font-bold text-[#000080] mb-2">Projects</h1>
         <hr className="border-[#808080] mb-3" />
         <ul className="list-disc pl-5">
           <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">WSBoot</span> - Retro web desktop</li>
-          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">More coming soon...</span></li>
+          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">OpenModels</span> - AI model catalog</li>
+          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">OneBit</span> - Minimal product experiments</li>
+          <li className="mb-1"><span className="text-[#0000ff] underline cursor-pointer">TitanBase</span> - Technical knowledge workspace</li>
         </ul>
-      </div>
-    ),
-  },
-  "www.wsboot.com/contact": {
-    title: "Contact - WSBoot",
-    content: (
-      <div className="p-4 font-[serif] text-[14px]">
-        <h1 className="text-[20px] font-bold text-[#000080] mb-2">Contact</h1>
-        <hr className="border-[#808080] mb-3" />
-        <p className="mb-1">📧 Email: hi@wsboot.com</p>
-        <p className="mb-1">🌐 Website: www.wsboot.com</p>
-        <p className="mb-1">💻 GitHub: github.com/madeburo/wsboot</p>
       </div>
     ),
   },

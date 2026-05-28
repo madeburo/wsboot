@@ -11,7 +11,6 @@ import { WindowFrame } from "@/components/windows/WindowFrame";
 import { AboutWindow } from "@/components/windows/AboutWindow";
 import { CalculatorWindow } from "@/components/windows/CalculatorWindow";
 import { ComputerWindow } from "@/components/windows/ComputerWindow";
-import { ContactWindow } from "@/components/windows/ContactWindow";
 import { GamesWindow } from "@/components/windows/GamesWindow";
 import { InternetWindow } from "@/components/windows/InternetWindow";
 import { IEBrowserWindow } from "@/components/windows/IEBrowserWindow";
@@ -296,8 +295,6 @@ export default function Desktop() {
         return <ProjectsWindow {...props} />;
       case "project-details":
         return <ProjectDetailsWindow {...props} />;
-      case "contact":
-        return <ContactWindow {...props} />;
       case "internet":
         return <InternetWindow {...props} />;
       case "ie-browser":

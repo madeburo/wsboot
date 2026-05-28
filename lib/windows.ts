@@ -11,7 +11,6 @@ export type WindowId =
   | "msdos"
   | "outlook"
   | "projects"
-  | "contact"
   | "games"
   | "music"
   | "norton"
@@ -68,7 +67,6 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   mediaplayer: { id: "mediaplayer", title: "Windows Media Player", icon: "sound", width: 420, height: 380 },
   outlook: { id: "outlook", title: "Outlook Express", icon: "msoutlook", width: 720, height: 500 },
   projects: { id: "projects", title: "Projects", icon: "folder", width: 720, height: 500 },
-  contact: { id: "contact", title: "Contact", icon: "mail", width: 500, height: 380 },
   games: { id: "games", title: "Games", icon: "joystick", width: 760, height: 560 },
   music: { id: "music", title: "Winamp", icon: "winamp", width: 310, height: 470 },
   norton: { id: "norton", title: "Norton Commander", icon: "norton", width: 760, height: 500 },
@@ -106,7 +104,6 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "paint", label: "Paint", icon: "paint", windowId: "paint" },
   { id: "doom", label: "Doom", icon: "doom", windowId: "games" },
   { id: "calculator", label: "Calculator", icon: "calculator", windowId: "calculator" },
-  { id: "pictures", label: "My Pictures", icon: "folder", windowId: "projects" },
   { id: "themes", label: "Themes", icon: "folder", windowId: "settings" },
   { id: "pinball", label: "Pinball", icon: "pinball", windowId: "games" },
   { id: "credits", label: "CREDITS.txt", icon: "notepad", windowId: "about" },

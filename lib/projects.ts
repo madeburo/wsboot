@@ -11,13 +11,23 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "wsboot",
+    name: "WSBoot",
+    description: "A Windows 98-inspired retro web desktop running in your browser.",
+    status: "Online",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    site: "https://www.wsboot.com",
+    github: "https://github.com/madeburo/wsboot",
+    details: "Pixel-perfect retro UI with classic apps, games, Winamp, Paint, and a full boot sequence.",
+  },
+  {
     slug: "openmodels",
     name: "OpenModels",
     description: "A catalog interface for browsing practical AI models.",
     status: "Online",
     stack: ["Next.js", "TypeScript", "Search"],
-    site: "#",
-    github: "#",
+    site: "https://openmodels.app",
+    github: "https://github.com/madeburo/openmodels",
     details: "Model cards, filters, and tiny decisions that make research feel usable.",
   },
   {
@@ -26,8 +36,8 @@ export const projects: Project[] = [
     description: "Minimal product experiments with a strong systems taste.",
     status: "Prototype",
     stack: ["React", "Tailwind", "Edge"],
-    site: "#",
-    github: "#",
+    site: "https://onebit.dev",
+    github: "https://github.com/madeburo/onebit",
     details: "Small, fast, and opinionated tools for getting from idea to shipped interface.",
   },
   {
@@ -36,18 +46,8 @@ export const projects: Project[] = [
     description: "A structured workspace for technical knowledge and decisions.",
     status: "Private beta",
     stack: ["Postgres", "Next.js", "Workers"],
-    site: "#",
-    github: "#",
+    site: "https://titanbase.dev",
+    github: "https://github.com/madeburo/titanbase",
     details: "Built around traceable notes, resilient search, and calm operational workflows.",
-  },
-  {
-    slug: "aria-code",
-    name: "Aria Code",
-    description: "A code companion focused on clear engineering flow.",
-    status: "In progress",
-    stack: ["TypeScript", "LLM APIs", "DX"],
-    site: "#",
-    github: "#",
-    details: "A playful technical interface for turning vague software intent into concrete changes.",
   },
 ];

@@ -12,8 +12,7 @@ type Props = {
 export function StartMenu({ onOpen, onScreensaver, onShutdown }: Props) {
   const programs: Array<[WindowId, string, string]> = [
     ["about", "About Me", "profile"],
-    ["projects", "My Projects", "folder"],
-    ["contact", "Contact", "mail"],
+    ["projects", "Projects", "folder"],
     ["games", "Games", "joystick"],
     ["music", "Winamp", "winamp"],
     ["norton", "Norton Commander", "norton"],
