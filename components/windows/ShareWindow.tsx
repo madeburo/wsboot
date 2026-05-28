@@ -48,7 +48,7 @@ export function ShareWindow({ window: win, closeWindow, notify, playSound }: Win
     <div className="flex flex-col h-full bg-[#c0c0c0] p-3 text-[11px]">
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="text-[32px]">📨</div>
+        <img src="/icons/users-share.png" alt="" width={40} height={40} style={{ imageRendering: "pixelated" }} draggable={false} />
         <div>
           <div className="font-bold text-[13px]">Send to a Friend</div>
           <div className="text-[#808080]">Share WSBoot with someone special</div>

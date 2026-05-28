@@ -151,24 +151,18 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
     label,
     onClick,
     color = "#000080",
-    className = "",
   }: {
     label: string;
     onClick: () => void;
     color?: string;
-    className?: string;
   }) => (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center cursor-default select-none active:border-[#808080] ${className}`}
+      className="calc-btn flex items-center justify-center cursor-default select-none"
       style={{
         background: "#c0c0c0",
-        border: "2px solid",
-        borderColor: "#ffffff #808080 #808080 #ffffff",
-        boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
         color,
-        fontSize: "14px",
-        fontWeight: "bold",
+        fontSize: "13px",
         height: "28px",
       }}
     >
@@ -178,6 +172,19 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
 
   return (
     <div className="flex flex-col h-full bg-[#c0c0c0]">
+      <style>{`
+        .calc-btn {
+          border: 2px solid;
+          border-color: #ffffff #808080 #808080 #ffffff;
+          box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a;
+        }
+        .calc-btn:active {
+          border-color: #808080 #ffffff #ffffff #808080;
+          box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #dfdfdf;
+          padding-top: 1px;
+          padding-left: 1px;
+        }
+      `}</style>
       {/* Menu bar */}
       <div className="flex items-center h-[20px] px-1 text-[11px] border-b border-[#808080]">
         <span className="px-2 cursor-default hover:bg-[#000080] hover:text-white"><u>E</u>dit</span>
@@ -215,36 +222,27 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
           </div>
           <button
             onClick={backspace}
-            className="h-[28px] flex items-center justify-center cursor-default select-none text-[11px] font-bold text-[#800000]"
+            className="calc-btn h-[28px] flex items-center justify-center cursor-default select-none text-[11px] text-[#800000]"
             style={{
               background: "#c0c0c0",
-              border: "2px solid",
-              borderColor: "#ffffff #808080 #808080 #ffffff",
-              boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
             }}
           >
             Backspace
           </button>
           <button
             onClick={clearEntry}
-            className="h-[28px] flex items-center justify-center cursor-default select-none text-[11px] font-bold text-[#800000]"
+            className="calc-btn h-[28px] flex items-center justify-center cursor-default select-none text-[11px] text-[#800000]"
             style={{
               background: "#c0c0c0",
-              border: "2px solid",
-              borderColor: "#ffffff #808080 #808080 #ffffff",
-              boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
             }}
           >
             CE
           </button>
           <button
             onClick={clear}
-            className="h-[28px] flex items-center justify-center cursor-default select-none text-[11px] font-bold text-[#800000]"
+            className="calc-btn h-[28px] flex items-center justify-center cursor-default select-none text-[11px] text-[#800000]"
             style={{
               background: "#c0c0c0",
-              border: "2px solid",
-              borderColor: "#ffffff #808080 #808080 #ffffff",
-              boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
             }}
           >
             C
