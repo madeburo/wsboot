@@ -22,11 +22,11 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <WSBootIcon type="computer" size={28} />
-            <div className="font-bold">Welcome to WSBoot — my web desktop.</div>
+            <div className="font-bold">Welcome to wsboot</div>
           </div>
           <section>
             <h3 className="font-bold">Who am I</h3>
-            <p>I build technical products with a taste for fast interfaces, thoughtful systems, and tiny delightful details.</p>
+            <p>My first computer was a Windows 98 machine with an Intel Celeron. WSBoot is a small tribute to that era: BIOS screens, pixel icons, slow boot times, old games, and the feeling that every folder could hide something interesting.</p>
           </section>
           <section>
             <h3 className="font-bold">What I build</h3>
@@ -34,7 +34,7 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
           </section>
           <section>
             <h3 className="font-bold">Tech stack</h3>
-            <p>Specialized in: Python · FastAPI · TypeScript · NestJS · PostgreSQL · ClickHouse · Kafka · AWS · LLM workflows</p>
+            <p>Python · FastAPI · TypeScript · NestJS · PostgreSQL · ClickHouse · Kafka · AWS · LLM / SLM workflows</p>
           </section>
           <section>
             <h3 className="font-bold">Current focus</h3>
@@ -49,7 +49,27 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
                 rel="noopener noreferrer"
                 className="text-[#0000ff] underline hover:text-[#ff0000]"
               >
-                LinkedIn — linkedin.com/in/mirzabekov
+                LinkedIn
+              </a>
+            </p>
+            <p>
+              <a
+                href="https://github.com/madeburo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#0000ff] underline hover:text-[#ff0000]"
+              >
+                Github
+              </a>
+            </p>
+            <p>
+              <a
+                href="https://x.com/madeburo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#0000ff] underline hover:text-[#ff0000]"
+              >
+                Twiiter / X
               </a>
             </p>
           </section>

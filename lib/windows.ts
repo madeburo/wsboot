@@ -7,7 +7,9 @@ export type WindowId =
   | "defrag"
   | "internet"
   | "ie-browser"
+  | "mediaplayer"
   | "msdos"
+  | "outlook"
   | "projects"
   | "contact"
   | "games"
@@ -62,6 +64,8 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   internet: { id: "internet", title: "Connecting to WSBoot Net...", icon: "ie", width: 380, height: 340 },
   "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 760, height: 520 },
   msdos: { id: "msdos", title: "MS-DOS Prompt", icon: "prompt", width: 640, height: 400 },
+  mediaplayer: { id: "mediaplayer", title: "Windows Media Player", icon: "sound", width: 420, height: 380 },
+  outlook: { id: "outlook", title: "Outlook Express", icon: "msoutlook", width: 720, height: 500 },
   projects: { id: "projects", title: "Projects", icon: "folder", width: 720, height: 500 },
   contact: { id: "contact", title: "Contact", icon: "mail", width: 500, height: 380 },
   games: { id: "games", title: "Games", icon: "joystick", width: 760, height: 560 },
@@ -108,5 +112,7 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "minesweeper", label: "Minesweeper", icon: "mine", windowId: "games" },
   { id: "solitaire", label: "Solitaire", icon: "cards", windowId: "games" },
   { id: "notepad", label: "Notepad", icon: "notepad", windowId: "about" },
+  { id: "mediaplayer", label: "Media Player", icon: "sound", windowId: "mediaplayer" },
+  { id: "outlook", label: "Outlook Express", icon: "msoutlook", windowId: "outlook" },
   { id: "share", label: "Share", icon: "share", windowId: "share" },
 ];

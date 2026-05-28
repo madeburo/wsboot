@@ -16,8 +16,10 @@ import { GamesWindow } from "@/components/windows/GamesWindow";
 import { InternetWindow } from "@/components/windows/InternetWindow";
 import { IEBrowserWindow } from "@/components/windows/IEBrowserWindow";
 import { MsDosWindow } from "@/components/windows/MsDosWindow";
+import { MediaPlayerWindow } from "@/components/windows/MediaPlayerWindow";
 import { MusicWindow } from "@/components/windows/MusicWindow";
 import { NortonCommanderWindow } from "@/components/windows/NortonCommanderWindow";
+import { OutlookWindow } from "@/components/windows/OutlookWindow";
 import { PaintWindow } from "@/components/windows/PaintWindow";
 import { ProjectDetailsWindow } from "@/components/windows/ProjectDetailsWindow";
 import { ProjectsWindow } from "@/components/windows/ProjectsWindow";
@@ -302,12 +304,16 @@ export default function Desktop() {
         return <IEBrowserWindow {...props} />;
       case "msdos":
         return <MsDosWindow {...props} />;
+      case "mediaplayer":
+        return <MediaPlayerWindow {...props} />;
       case "games":
         return <GamesWindow {...props} />;
       case "music":
         return <MusicWindow {...props} />;
       case "norton":
         return <NortonCommanderWindow {...props} />;
+      case "outlook":
+        return <OutlookWindow {...props} />;
       case "paint":
         return <PaintWindow />;
       case "run":
