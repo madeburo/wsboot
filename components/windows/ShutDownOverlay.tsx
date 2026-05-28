@@ -44,7 +44,7 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
   if (safe) {
     return (
       <div className="fixed inset-0 z-[8000] flex flex-col items-center justify-center">
-        {/* Clouds background with dark overlay */}
+
         <div
           className="absolute inset-0"
           style={{
@@ -54,25 +54,23 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
             filter: "brightness(0.2)",
           }}
         />
-        {/* Main text - pixel font */}
+
         <div className="relative text-center mb-12">
           <div
             className="text-[32px] text-[#ffb000] leading-relaxed"
             style={{
-              fontFamily: "var(--font-wsboot)",
+              fontFamily: "var(--font-shutdown)",
               textShadow: "0 0 10px rgba(255, 176, 0, 0.4)",
-              imageRendering: "pixelated",
             }}
           >
             It&apos;s now safe to turn off<br/>your computer.
           </div>
         </div>
 
-        {/* Share section */}
         <div className="relative text-center">
           <p
             className="text-[13px] text-[#a0a0a0] mb-4"
-            style={{ fontFamily: "var(--font-wsboot)" }}
+            style={{ fontFamily: "var(--font-shutdown)" }}
           >
             Enjoyed WSBoot? Share it with friends:
           </p>
@@ -84,7 +82,7 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
                 target={link.label === "Email" ? "_self" : "_blank"}
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e]/80 border border-[#444] rounded hover:bg-[#2a2a4e] hover:border-[#ffb000] transition-colors text-[12px] text-[#d0d0d0] hover:text-[#ffb000]"
-                style={{ fontFamily: "var(--font-wsboot)" }}
+                style={{ fontFamily: "var(--font-shutdown)" }}
                 onClick={() => {
                   if (link.label === "Discord") {
                     navigator.clipboard.writeText(SHARE_URL).catch(() => {});
@@ -103,7 +101,6 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
 
   return (
     <div className="fixed inset-0 z-[7000] flex items-center justify-center">
-      {/* Clouds background with dark overlay */}
       <div
         className="absolute inset-0"
         style={{
@@ -121,15 +118,12 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
           boxShadow: "inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf"
         }}
       >
-        {/* Title bar */}
         <div className="flex h-[18px] items-center bg-gradient-to-r from-[#000080] to-[#1084d0] px-[4px]">
           <span className="text-[11px] font-bold text-white">Shut Down Windows</span>
         </div>
 
-        {/* Body */}
         <div className="p-[12px]">
           <div className="flex gap-[12px] mb-[16px]">
-            {/* Warning icon */}
             <div className="flex-shrink-0">
               <svg width="32" height="32" viewBox="0 0 32 32">
                 <circle cx="16" cy="16" r="14" fill="#c0c0c0" stroke="#000" strokeWidth="1"/>
@@ -163,7 +157,6 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center gap-[6px]">
             <button
               className="win-button min-w-[70px]"
