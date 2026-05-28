@@ -1,41 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Props = {
   onShare: () => void;
 };
 
 export function CornerWidget({ onShare }: Props) {
-  const [hovered, setHovered] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const lastClick = useRef(0);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const now = Date.now();
+    if (now - lastClick.current < 400) {
+      onShare();
+      setSelected(false);
+    } else {
+      setSelected(true);
+    }
+    lastClick.current = now;
+  };
 
   return (
-    <div className="fixed top-2 right-2 z-[3500] flex flex-col items-center">
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onShare();
-        }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className="flex items-center justify-center w-[48px] h-[48px] cursor-pointer transition-transform hover:scale-110"
-        title="Share WSBoot"
-        aria-label="Share WSBoot"
+    <button
+      className="fixed top-2 right-2 z-3500 flex h-[68px] w-[75px] flex-col items-center justify-start gap-[2px] p-[2px] text-white focus:outline-none cursor-default"
+      onClick={handleClick}
+      onBlur={() => setSelected(false)}
+      title="Share WSBoot"
+      aria-label="Share WSBoot"
+    >
+      <span
+        className="flex items-center justify-center p-[2px]"
+        style={selected ? { background: "rgba(0, 0, 128, 0.4)" } : undefined}
       >
         <img
           src="/share.png"
-          alt="Share"
-          width={40}
-          height={40}
+          alt=""
+          width={32}
+          height={32}
           draggable={false}
           style={{ imageRendering: "pixelated" }}
         />
-      </button>
-      {hovered && (
-        <div className="mt-1 px-2 py-0.5 bg-[#ffffe1] border border-[#000] text-[10px] whitespace-nowrap shadow-sm">
-          Share WSBoot
-        </div>
-      )}
-    </div>
+      </span>
+      <span
+        className={`max-w-[72px] break-words text-center text-[11px] leading-[13px] px-[2px] py-[1px] ${
+          selected
+            ? "bg-[#000080] text-white outline outline-1 outline-dotted outline-white"
+            : "text-white"
+        }`}
+        style={{ textShadow: selected ? "none" : "1px 1px 1px rgba(0,0,0,0.8)" }}
+      >
+        Share
+      </span>
+    </button>
   );
 }

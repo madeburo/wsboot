@@ -125,6 +125,7 @@ export default function Desktop() {
   const [booted, setBooted] = useState(false);
   const [bootMode, setBootMode] = useState<BootMode>("normal");
   const [dialupDone, setDialupDone] = useState(false);
+  const [pendingStartup, setPendingStartup] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<MenuState>(null);
   const [startOpen, setStartOpen] = useState(false);
@@ -313,6 +314,21 @@ export default function Desktop() {
     }
   };
 
+  // Play pending startup sound on first user interaction with desktop
+  useEffect(() => {
+    if (!pendingStartup) return;
+    const play = () => {
+      playSound("startup");
+      setPendingStartup(false);
+    };
+    window.addEventListener("pointerdown", play, { once: true });
+    window.addEventListener("keydown", play, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", play);
+      window.removeEventListener("keydown", play);
+    };
+  }, [pendingStartup, playSound]);
+
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -358,6 +374,7 @@ export default function Desktop() {
         onComplete={(mode) => {
           setBootMode(mode);
           setBooted(true);
+          setPendingStartup(true);
         }}
         playSound={playSound}
       />
