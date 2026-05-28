@@ -10,11 +10,14 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
       <MenuBar onHelp={() => notify("This app has performed exactly as expected.")} />
       <div className="flex min-h-0 flex-1 gap-4 overflow-auto">
         <div className="win-bevel-inset flex h-32 w-32 shrink-0 items-center justify-center bg-[#d8d8d8]">
-          <div className="grid h-24 w-24 grid-cols-4 gap-1">
-            {Array.from({ length: 16 }).map((_, index) => (
-              <span key={index} className={index % 3 === 0 ? "bg-[#000080]" : index % 2 ? "bg-[#ffe0bd]" : "bg-[#c0c0c0]"} />
-            ))}
-          </div>
+          <img
+            src="/user.png"
+            alt="About"
+            width={48}
+            height={48}
+            draggable={false}
+            style={{ imageRendering: "pixelated" }}
+          />
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -31,11 +34,24 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
           </section>
           <section>
             <h3 className="font-bold">Tech stack</h3>
-            <p>TypeScript, React, Next.js, Postgres, Node, LLM APIs, design systems, and a suspicious amount of debugging.</p>
+            <p>Specialized in: Python · FastAPI · TypeScript · NestJS · PostgreSQL · ClickHouse · Kafka · AWS · LLM workflows</p>
           </section>
           <section>
             <h3 className="font-bold">Current focus</h3>
             <p>Shipping humane AI workflows and interfaces that invite deep work instead of more tabs.</p>
+          </section>
+          <section>
+            <h3 className="font-bold">Connect</h3>
+            <p>
+              <a
+                href="https://www.linkedin.com/in/mirzabekov/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#0000ff] underline hover:text-[#ff0000]"
+              >
+                LinkedIn — linkedin.com/in/mirzabekov
+              </a>
+            </p>
           </section>
         </div>
       </div>

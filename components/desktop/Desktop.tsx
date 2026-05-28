@@ -28,7 +28,6 @@ import { ShareWindow } from "@/components/windows/ShareWindow";
 import { DefragWindow } from "@/components/windows/DefragWindow";
 import { ShutDownOverlay } from "@/components/windows/ShutDownOverlay";
 import { ScreensaverOverlay } from "@/components/screensavers/ScreensaverOverlay";
-import { CornerWidget } from "./CornerWidget";
 import { useDoubleClick } from "@/hooks/useDoubleClick";
 import { useScreensaver } from "@/hooks/useScreensaver";
 import { useSound } from "@/hooks/useSound";
@@ -62,9 +61,21 @@ function initialIconPositions() {
 
 function iconGridPositions(ids: string[]) {
   const availableHeight = typeof window === "undefined" ? 740 : window.innerHeight - TASKBAR_HEIGHT - DESKTOP_PADDING * 2;
+  const availableWidth = typeof window === "undefined" ? 1024 : window.innerWidth - DESKTOP_PADDING * 2;
   const rows = Math.max(1, Math.floor(availableHeight / ICON_STEP_Y));
+  const maxCols = Math.max(1, Math.floor(availableWidth / ICON_STEP_X));
   return Object.fromEntries(
     ids.map((id, index) => {
+      // Place "share" icon at bottom-right
+      if (id === "share") {
+        return [
+          id,
+          {
+            x: DESKTOP_PADDING + (maxCols - 1) * ICON_STEP_X,
+            y: DESKTOP_PADDING + (rows - 1) * ICON_STEP_Y,
+          },
+        ];
+      }
       const column = Math.floor(index / rows);
       const row = index % rows;
       return [
@@ -397,9 +408,6 @@ export default function Desktop() {
       }}
     >
       <div className="relative h-[calc(100vh-28px)]">
-        {/* Corner share widget */}
-        <CornerWidget onShare={() => openWindow("share")} />
-
         {desktopIcons.map((icon) => (
           <DesktopIcon
             key={icon.id}

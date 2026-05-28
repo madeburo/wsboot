@@ -108,4 +108,5 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "minesweeper", label: "Minesweeper", icon: "mine", windowId: "games" },
   { id: "solitaire", label: "Solitaire", icon: "cards", windowId: "games" },
   { id: "notepad", label: "Notepad", icon: "notepad", windowId: "about" },
+  { id: "share", label: "Share", icon: "share", windowId: "share" },
 ];
