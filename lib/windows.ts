@@ -78,7 +78,7 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   screensaver: { id: "screensaver", title: "Screensaver", icon: "monitor", width: 460, height: 330 },
   run: { id: "run", title: "Run", icon: "run", width: 420, height: 210 },
   settings: { id: "settings", title: "Settings", icon: "settings", width: 520, height: 380 },
-  share: { id: "share", title: "Send to a Friend", icon: "mail", width: 380, height: 460 },
+  share: { id: "share", title: "Send to a Friend", icon: "users-share", width: 420, height: 520 },
   "project-details": {
     id: "project-details",
     title: "Project Details",
@@ -117,5 +117,5 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "notepad", label: "Notepad", icon: "notepad", windowId: "notepad" },
   { id: "outlook", label: "Outlook Express", icon: "msoutlook", windowId: "outlook" },
   { id: "legend", label: "legend", icon: "video", windowId: "mediaplayer", payload: "Rick Astley - Never Gonna Give You Up" },
-  { id: "share", label: "Share", icon: "share", windowId: "share" },
+  { id: "share", label: "Share", icon: "users-share", windowId: "share" },
 ];

@@ -6,6 +6,7 @@ import type { WindowComponentProps } from "@/lib/windows";
 export function CalculatorWindow({ playSound }: WindowComponentProps) {
   const [display, setDisplay] = useState("0");
   const [memory, setMemory] = useState(0);
+  const [hasMemory, setHasMemory] = useState(false);
   const [operand, setOperand] = useState<number | null>(null);
   const [operator, setOperator] = useState<string | null>(null);
   const [resetNext, setResetNext] = useState(false);
@@ -145,13 +146,30 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [inputDigit, inputDot, handleOperator, handleEquals, clear, backspace]);
 
-  const btn = (label: string, onClick: () => void, color?: string, wide?: boolean) => (
+  // Win98 style button
+  const CalcButton = ({
+    label,
+    onClick,
+    color = "#000080",
+    className = "",
+  }: {
+    label: string;
+    onClick: () => void;
+    color?: string;
+    className?: string;
+  }) => (
     <button
       onClick={onClick}
-      className={`h-[36px] ${wide ? "col-span-1" : ""} flex items-center justify-center border-[2px] bg-[#c0c0c0] text-[14px] font-bold cursor-default active:translate-x-px active:translate-y-px select-none`}
+      className={`flex items-center justify-center cursor-default select-none active:border-[#808080] ${className}`}
       style={{
-        borderColor: "#dfdfdf #808080 #808080 #dfdfdf",
-        color: color ?? "#000080",
+        background: "#c0c0c0",
+        border: "2px solid",
+        borderColor: "#ffffff #808080 #808080 #ffffff",
+        boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
+        color,
+        fontSize: "14px",
+        fontWeight: "bold",
+        height: "28px",
       }}
     >
       {label}
@@ -161,83 +179,111 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
   return (
     <div className="flex flex-col h-full bg-[#c0c0c0]">
       {/* Menu bar */}
-      <div className="flex items-center h-[20px] px-2 border-b border-[#808080] text-[11px]">
-        <span className="px-2 underline cursor-default">Edit</span>
-        <span className="px-2 underline cursor-default">View</span>
-        <span className="px-2 underline cursor-default">Help</span>
+      <div className="flex items-center h-[20px] px-1 text-[11px] border-b border-[#808080]">
+        <span className="px-2 cursor-default hover:bg-[#000080] hover:text-white"><u>E</u>dit</span>
+        <span className="px-2 cursor-default hover:bg-[#000080] hover:text-white"><u>V</u>iew</span>
+        <span className="px-2 cursor-default hover:bg-[#000080] hover:text-white"><u>H</u>elp</span>
       </div>
 
       {/* Display */}
-      <div className="mx-3 mt-3 mb-2">
+      <div className="mx-[8px] mt-[8px] mb-[4px]">
         <div
-          className="h-[32px] flex items-center justify-end px-2 bg-white text-[18px] font-mono text-right"
-          style={{ borderColor: "#808080 #dfdfdf #dfdfdf #808080", borderWidth: 2, borderStyle: "solid" }}
+          className="h-[28px] flex items-center justify-end px-[4px] bg-white font-mono text-right text-[16px]"
+          style={{
+            border: "2px solid",
+            borderColor: "#808080 #ffffff #ffffff #808080",
+          }}
         >
           {display}
         </div>
       </div>
 
-      {/* Buttons grid */}
-      <div className="flex-1 px-3 pb-3">
-        {/* Row 1: blank, Backspace, CE, C */}
-        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-[4px] mb-[4px]">
-          <div className="h-[32px] border-[2px] bg-[#c0c0c0]" style={{ borderColor: "#dfdfdf #808080 #808080 #dfdfdf" }} />
+      {/* Buttons area */}
+      <div className="flex-1 px-[8px] pb-[8px] pt-[4px]">
+        {/* Row 1: Memory indicator, Backspace, CE, C */}
+        <div className="grid grid-cols-[40px_1fr_1fr_1fr] gap-[4px] mb-[4px]">
+          {/* Memory indicator box */}
+          <div
+            className="h-[28px] flex items-center justify-center text-[11px]"
+            style={{
+              background: "#c0c0c0",
+              border: "2px solid",
+              borderColor: "#808080 #ffffff #ffffff #808080",
+            }}
+          >
+            {hasMemory ? "M" : ""}
+          </div>
           <button
             onClick={backspace}
-            className="h-[32px] flex items-center justify-center border-[2px] bg-[#c0c0c0] text-[11px] font-bold text-[#800000] cursor-default active:translate-x-px active:translate-y-px"
-            style={{ borderColor: "#dfdfdf #808080 #808080 #dfdfdf" }}
+            className="h-[28px] flex items-center justify-center cursor-default select-none text-[11px] font-bold text-[#800000]"
+            style={{
+              background: "#c0c0c0",
+              border: "2px solid",
+              borderColor: "#ffffff #808080 #808080 #ffffff",
+              boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
+            }}
           >
             Backspace
           </button>
           <button
             onClick={clearEntry}
-            className="h-[32px] flex items-center justify-center border-[2px] bg-[#c0c0c0] text-[11px] font-bold text-[#800000] cursor-default active:translate-x-px active:translate-y-px"
-            style={{ borderColor: "#dfdfdf #808080 #808080 #dfdfdf" }}
+            className="h-[28px] flex items-center justify-center cursor-default select-none text-[11px] font-bold text-[#800000]"
+            style={{
+              background: "#c0c0c0",
+              border: "2px solid",
+              borderColor: "#ffffff #808080 #808080 #ffffff",
+              boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
+            }}
           >
             CE
           </button>
           <button
             onClick={clear}
-            className="h-[32px] flex items-center justify-center border-[2px] bg-[#c0c0c0] text-[11px] font-bold text-[#800000] cursor-default active:translate-x-px active:translate-y-px"
-            style={{ borderColor: "#dfdfdf #808080 #808080 #dfdfdf" }}
+            className="h-[28px] flex items-center justify-center cursor-default select-none text-[11px] font-bold text-[#800000]"
+            style={{
+              background: "#c0c0c0",
+              border: "2px solid",
+              borderColor: "#ffffff #808080 #808080 #ffffff",
+              boxShadow: "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
+            }}
           >
             C
           </button>
         </div>
 
         {/* Main grid: 4 rows x 6 cols */}
-        <div className="grid grid-cols-6 gap-[4px]">
-          {/* Row: MC 7 8 9 / sqrt */}
-          {btn("MC", () => { playSound("click"); setMemory(0); }, "#800000")}
-          {btn("7", () => inputDigit("7"))}
-          {btn("8", () => inputDigit("8"))}
-          {btn("9", () => inputDigit("9"))}
-          {btn("÷", () => handleOperator("/"), "#ff0000")}
-          {btn("√", sqrt)}
+        <div className="grid grid-cols-[40px_1fr_1fr_1fr_1fr_1fr] gap-[4px]">
+          {/* Row 1: MC 7 8 9 / sqrt */}
+          <CalcButton label="MC" onClick={() => { playSound("click"); setMemory(0); setHasMemory(false); }} color="#800000" />
+          <CalcButton label="7" onClick={() => inputDigit("7")} />
+          <CalcButton label="8" onClick={() => inputDigit("8")} />
+          <CalcButton label="9" onClick={() => inputDigit("9")} />
+          <CalcButton label="/" onClick={() => handleOperator("/")} color="#ff0000" />
+          <CalcButton label="√" onClick={sqrt} />
 
-          {/* Row: MR 4 5 6 * % */}
-          {btn("MR", () => { playSound("click"); setDisplay(String(memory)); setResetNext(true); }, "#800000")}
-          {btn("4", () => inputDigit("4"))}
-          {btn("5", () => inputDigit("5"))}
-          {btn("6", () => inputDigit("6"))}
-          {btn("×", () => handleOperator("*"), "#ff0000")}
-          {btn("%", percent)}
+          {/* Row 2: MR 4 5 6 * % */}
+          <CalcButton label="MR" onClick={() => { playSound("click"); setDisplay(String(memory)); setResetNext(true); }} color="#800000" />
+          <CalcButton label="4" onClick={() => inputDigit("4")} />
+          <CalcButton label="5" onClick={() => inputDigit("5")} />
+          <CalcButton label="6" onClick={() => inputDigit("6")} />
+          <CalcButton label="*" onClick={() => handleOperator("*")} color="#ff0000" />
+          <CalcButton label="%" onClick={percent} />
 
-          {/* Row: MS 1 2 3 - 1/x */}
-          {btn("MS", () => { playSound("click"); setMemory(current); }, "#800000")}
-          {btn("1", () => inputDigit("1"))}
-          {btn("2", () => inputDigit("2"))}
-          {btn("3", () => inputDigit("3"))}
-          {btn("−", () => handleOperator("-"), "#ff0000")}
-          {btn("1/x", reciprocal)}
+          {/* Row 3: MS 1 2 3 - 1/x */}
+          <CalcButton label="MS" onClick={() => { playSound("click"); setMemory(current); setHasMemory(true); }} color="#800000" />
+          <CalcButton label="1" onClick={() => inputDigit("1")} />
+          <CalcButton label="2" onClick={() => inputDigit("2")} />
+          <CalcButton label="3" onClick={() => inputDigit("3")} />
+          <CalcButton label="-" onClick={() => handleOperator("-")} color="#ff0000" />
+          <CalcButton label="1/x" onClick={reciprocal} />
 
-          {/* Row: M+ 0 +/- . + = */}
-          {btn("M+", () => { playSound("click"); setMemory(memory + current); }, "#800000")}
-          {btn("0", () => inputDigit("0"))}
-          {btn("±", toggleSign)}
-          {btn(".", inputDot)}
-          {btn("+", () => handleOperator("+"), "#ff0000")}
-          {btn("=", handleEquals, "#ff0000")}
+          {/* Row 4: M+ 0 +/- . + = */}
+          <CalcButton label="M+" onClick={() => { playSound("click"); setMemory(memory + current); setHasMemory(true); }} color="#800000" />
+          <CalcButton label="0" onClick={() => inputDigit("0")} />
+          <CalcButton label="+/-" onClick={toggleSign} />
+          <CalcButton label="." onClick={inputDot} />
+          <CalcButton label="+" onClick={() => handleOperator("+")} color="#ff0000" />
+          <CalcButton label="=" onClick={handleEquals} color="#ff0000" />
         </div>
       </div>
     </div>
