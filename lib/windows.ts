@@ -61,7 +61,7 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 320 },
   computer: { id: "computer", title: "My Computer", icon: "computer", width: 660, height: 450 },
   defrag: { id: "defrag", title: "Defragmenting Drive C", icon: "computer", width: 580, height: 420 },
-  internet: { id: "internet", title: "Connecting to WSBoot Net...", icon: "ie", width: 380, height: 340 },
+  internet: { id: "internet", title: "WSBoot Net", icon: "ie", width: 380, height: 400 },
   "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 760, height: 520 },
   msdos: { id: "msdos", title: "MS-DOS Prompt", icon: "prompt", width: 640, height: 400 },
   mediaplayer: { id: "mediaplayer", title: "Windows Media Player", icon: "sound", width: 420, height: 380 },

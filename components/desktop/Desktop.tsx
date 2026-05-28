@@ -175,9 +175,12 @@ export default function Desktop() {
       openWindow("ie-browser");
     } else {
       openWindow("internet");
-      setDialupDone(true);
     }
   }, [dialupDone, openWindow]);
+
+  const handleDialupConnected = useCallback(() => {
+    setDialupDone(true);
+  }, []);
 
   const handleQuickLaunch = useCallback(
     (id: string) => {
@@ -296,7 +299,7 @@ export default function Desktop() {
       case "project-details":
         return <ProjectDetailsWindow {...props} />;
       case "internet":
-        return <InternetWindow {...props} />;
+        return <InternetWindow {...props} onConnected={handleDialupConnected} />;
       case "ie-browser":
         return <IEBrowserWindow {...props} />;
       case "msdos":
