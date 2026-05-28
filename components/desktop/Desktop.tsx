@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BootScreen } from "@/components/boot/BootScreen";
+import { BootScreen, BootMode } from "@/components/boot/BootScreen";
 import { ContextMenu } from "./ContextMenu";
 import { DesktopIcon } from "./DesktopIcon";
 import { NotificationBalloon } from "./NotificationBalloon";
@@ -115,6 +115,7 @@ function nearestFreeGridPosition(id: string, x: number, y: number, positions: Re
 
 export default function Desktop() {
   const [booted, setBooted] = useState(false);
+  const [bootMode, setBootMode] = useState<BootMode>("normal");
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<MenuState>(null);
   const [startOpen, setStartOpen] = useState(false);
@@ -302,12 +303,22 @@ export default function Desktop() {
   );
 
   if (!booted) {
-    return <BootScreen onComplete={() => setBooted(true)} playSound={playSound} />;
+    return (
+      <BootScreen
+        onComplete={(mode) => {
+          setBootMode(mode);
+          setBooted(true);
+        }}
+        playSound={playSound}
+      />
+    );
   }
+
+  const isSafeMode = bootMode === "safe";
 
   return (
     <main
-      className="wsboot-wallpaper h-screen w-screen overflow-hidden pb-[28px]"
+      className={`h-screen w-screen overflow-hidden pb-[28px] ${isSafeMode ? "bg-[#008080]" : "wsboot-wallpaper"}`}
       onClick={() => {
         setContextMenu(null);
         setStartOpen(false);
@@ -433,6 +444,7 @@ export default function Desktop() {
           onRestart={() => {
             setShutdownOpen(false);
             setBooted(false);
+            setBootMode("normal");
             setSafeToTurnOff(false);
           }}
           onShutdown={() => setSafeToTurnOff(true)}
@@ -441,6 +453,15 @@ export default function Desktop() {
       )}
 
       {screensaver.active && <ScreensaverOverlay mode={screensaver.mode} onExit={screensaver.stop} />}
+
+      {isSafeMode && (
+        <>
+          <div className="fixed top-1 left-2 text-[#ffff00] font-bold text-[12px] font-mono pointer-events-none z-9999">Safe Mode</div>
+          <div className="fixed top-1 right-2 text-[#ffff00] font-bold text-[12px] font-mono pointer-events-none z-9999">Safe Mode</div>
+          <div className="fixed bottom-[30px] left-2 text-[#ffff00] font-bold text-[12px] font-mono pointer-events-none z-9999">Safe Mode</div>
+          <div className="fixed bottom-[30px] right-2 text-[#ffff00] font-bold text-[12px] font-mono pointer-events-none z-9999">Safe Mode</div>
+        </>
+      )}
     </main>
   );
 }

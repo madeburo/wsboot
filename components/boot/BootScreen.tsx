@@ -1,24 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { BiosScreen } from "./BiosScreen";
 
-export function BootScreen({ onComplete, playSound }: { onComplete: () => void; playSound: (name: string) => void }) {
-  const [progress, setProgress] = useState(0);
+export type BootMode = "normal" | "logged" | "safe" | "command";
 
-  useEffect(() => {
-    const tick = window.setInterval(() => setProgress((value) => Math.min(1, value + 0.08)), 180);
+export function BootScreen({
+  onComplete,
+  playSound,
+}: {
+  onComplete: (mode: BootMode) => void;
+  playSound: (name: string) => void;
+}) {
+  const handleComplete = (mode: BootMode) => {
+    playSound("startup");
+    onComplete(mode);
+  };
 
-    const done = window.setTimeout(() => {
-      playSound("startup");
-      onComplete();
-    }, 3000);
-    
-    return () => {
-      window.clearInterval(tick);
-      window.clearTimeout(done);
-    };
-  }, [onComplete, playSound]);
-
-  return <BiosScreen progress={progress} />;
+  return <BiosScreen onComplete={handleComplete} />;
 }
