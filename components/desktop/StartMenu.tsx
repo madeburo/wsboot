@@ -11,7 +11,7 @@ type Props = {
 
 export function StartMenu({ onOpen, onScreensaver, onShutdown }: Props) {
   const programs: Array<[WindowId, string, string]> = [
-    ["about", "About Me", "profile"],
+    ["about", "About", "profile"],
     ["projects", "Projects", "folder"],
     ["games", "Games", "joystick"],
     ["music", "Winamp", "winamp"],
@@ -72,12 +72,7 @@ export function StartMenu({ onOpen, onScreensaver, onShutdown }: Props) {
 
         {/* Shut Down */}
         <button className="menu-command flex items-center gap-[8px] py-[3px]" onClick={onShutdown}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="2" y="2" width="12" height="12" fill="#c0c0c0" stroke="#808080"/>
-            <rect x="4" y="4" width="8" height="8" fill="#ff0000"/>
-            <rect x="6" y="3" width="4" height="3" fill="#c0c0c0"/>
-            <rect x="7" y="2" width="2" height="5" fill="#000"/>
-          </svg>
+          <img src="/icons/shutdown.png" alt="" width={16} height={16} style={{ imageRendering: "pixelated" }} draggable={false} />
           <span>Shut Down...</span>
         </button>
       </div>

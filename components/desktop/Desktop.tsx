@@ -15,6 +15,7 @@ import { DoomWindow } from "@/components/windows/DoomWindow";
 import { GamesWindow } from "@/components/windows/GamesWindow";
 import { InternetWindow } from "@/components/windows/InternetWindow";
 import { IEBrowserWindow } from "@/components/windows/IEBrowserWindow";
+import { NetscapeWindow } from "@/components/windows/NetscapeWindow";
 import { MsDosWindow } from "@/components/windows/MsDosWindow";
 import { MediaPlayerWindow } from "@/components/windows/MediaPlayerWindow";
 import { MusicWindow } from "@/components/windows/MusicWindow";
@@ -195,6 +196,11 @@ export default function Desktop() {
     [openInternet, openWindow],
   );
 
+  const handleShowDesktop = useCallback(() => {
+    wm.minimizeAll();
+    playSound("click");
+  }, [wm, playSound]);
+
   const iconClick = useDoubleClick<string>(
     (id) => {
       setSelectedIcon(id);
@@ -304,6 +310,8 @@ export default function Desktop() {
         return <InternetWindow {...props} onConnected={handleDialupConnected} />;
       case "ie-browser":
         return <IEBrowserWindow {...props} />;
+      case "netscape":
+        return <NetscapeWindow {...props} />;
       case "msdos":
         return <MsDosWindow {...props} />;
       case "mediaplayer":
@@ -562,6 +570,7 @@ export default function Desktop() {
         onTask={(instanceId) => wm.focusWindow(instanceId)}
         onToggleMute={() => setMuted((value) => !value)}
         onQuickLaunch={handleQuickLaunch}
+        onShowDesktop={handleShowDesktop}
       />
 
       {shutdownOpen && (

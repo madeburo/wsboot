@@ -8,6 +8,7 @@ export type WindowId =
   | "doom"
   | "internet"
   | "ie-browser"
+  | "netscape"
   | "mediaplayer"
   | "msdos"
   | "notepad"
@@ -60,12 +61,13 @@ export type WindowComponentProps = {
 
 export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   about: { id: "about", title: "About Me", icon: "computer", width: 520, height: 430 },
-  calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 280 },
-  computer: { id: "computer", title: "My Computer", icon: "computer", width: 680, height: 480 },
+  calculator: { id: "calculator", title: "Calculator", icon: "calculator", width: 260, height: 270 },
+  computer: { id: "computer", title: "My Computer", icon: "computer", width: 720, height: 520 },
   defrag: { id: "defrag", title: "Defragmenting Drive C", icon: "computer", width: 580, height: 420 },
   doom: { id: "doom", title: "Doom", icon: "doom", width: 800, height: 580 },
   internet: { id: "internet", title: "WSBoot Net", icon: "ie", width: 380, height: 400 },
-  "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 800, height: 580 },
+  "ie-browser": { id: "ie-browser", title: "Microsoft Internet Explorer", icon: "ie", width: 840, height: 580 },
+  netscape: { id: "netscape", title: "Netscape Navigator", icon: "netscape", width: 760, height: 520 },
   msdos: { id: "msdos", title: "MS-DOS Prompt", icon: "prompt", width: 640, height: 400 },
   notepad: { id: "notepad", title: "Untitled - Notepad", icon: "notepad", width: 600, height: 440 },
   mediaplayer: { id: "mediaplayer", title: "Windows Media Player", icon: "sound", width: 420, height: 380 },
@@ -106,16 +108,17 @@ export const desktopIcons: DesktopIconDefinition[] = [
   { id: "winamp", label: "Winamp", icon: "winamp", windowId: "music" },
   { id: "recycle", label: "Recycle Bin", icon: "trash", message: "Recycle Bin is empty. Very responsible." },
   { id: "prompt", label: "MS-DOS Prompt", icon: "prompt", windowId: "msdos" },
-  { id: "paint", label: "Paint", icon: "paint", windowId: "paint" },
+  { id: "paint", label: "Paint", icon: "painticon", windowId: "paint" },
   { id: "doom", label: "Doom", icon: "doom", windowId: "doom" },
   { id: "calculator", label: "Calculator", icon: "calculator", windowId: "calculator" },
   { id: "themes", label: "Themes", icon: "folder", windowId: "settings" },
   { id: "pinball", label: "Pinball", icon: "pinball", windowId: "games" },
   { id: "credits", label: "CREDITS.txt", icon: "notepad", windowId: "about" },
   { id: "minesweeper", label: "Minesweeper", icon: "mine", windowId: "games" },
+  { id: "netscape", label: "Netscape Navigator", icon: "netscape", windowId: "netscape" },
   { id: "solitaire", label: "Solitaire", icon: "cards", windowId: "games" },
   { id: "notepad", label: "Notepad", icon: "notepad", windowId: "notepad" },
   { id: "outlook", label: "Outlook Express", icon: "msoutlook", windowId: "outlook" },
   { id: "legend", label: "legend", icon: "video", windowId: "mediaplayer", payload: "Rick Astley - Never Gonna Give You Up" },
-  { id: "share", label: "Share", icon: "share", windowId: "share" },
+  { id: "share", label: "Share", icon: "garfield", windowId: "share" },
 ];

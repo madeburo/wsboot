@@ -113,6 +113,10 @@ export function useWindowManager() {
     );
   }, []);
 
+  const minimizeAll = useCallback(() => {
+    setWindows((items) => items.map((item) => ({ ...item, minimized: true })));
+  }, []);
+
   const activeWindow = useMemo(
     () =>
       windows
@@ -128,6 +132,7 @@ export function useWindowManager() {
     openWindow,
     closeWindow,
     minimizeWindow,
+    minimizeAll,
     maximizeWindow,
     moveWindow,
     resizeWindow,

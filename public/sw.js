@@ -7,7 +7,6 @@ const OFFLINE_URLS = [
   "/clouds.jpg",
 ];
 
-// Install — cache core assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_URLS))
@@ -15,7 +14,6 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// Activate — clean old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -25,7 +23,6 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Trim cache to prevent unbounded growth
 async function trimCache(cacheName, maxItems) {
   const cache = await caches.open(cacheName);
   const keys = await cache.keys();
@@ -35,11 +32,9 @@ async function trimCache(cacheName, maxItems) {
   }
 }
 
-// Fetch — network first, fallback to cache (same-origin only)
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-
-  // Only cache same-origin requests
+  
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 

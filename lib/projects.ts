@@ -18,7 +18,7 @@ export const projects: Project[] = [
     stack: ["Next.js", "TypeScript", "Tailwind CSS"],
     site: "https://www.wsboot.com",
     github: "https://github.com/madeburo/wsboot",
-    details: "Pixel-perfect retro UI with classic apps, games, Winamp, Paint, and a full boot sequence.",
+    details: "98 UI with classic apps, games and a full boot sequence.",
   },
   {
     slug: "openmodels",
