@@ -78,7 +78,7 @@ export function ShareWindow({ window: win, closeWindow, notify, playSound }: Win
       {/* Share options */}
       <fieldset className="border border-[#808080] px-3 py-2 mb-3">
         <legend className="text-[11px] px-1">Send using:</legend>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <button
             onClick={shareNative}
             className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white"
@@ -92,6 +92,41 @@ export function ShareWindow({ window: win, closeWindow, notify, playSound }: Win
           >
             <span>🐦</span>
             <span>Post on X (Twitter)</span>
+          </button>
+          <button
+            onClick={() => { window.open(`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent("WSBoot — Windows 98 in your browser")}`, "_blank"); playSound("click"); }}
+            className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white"
+          >
+            <span>🟠</span>
+            <span>Share on Reddit</span>
+          </button>
+          <button
+            onClick={() => { window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent("Check out WSBoot — Windows 98 in your browser! 💾")}`, "_blank"); playSound("click"); }}
+            className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white"
+          >
+            <span>✈️</span>
+            <span>Send via Telegram</span>
+          </button>
+          <button
+            onClick={() => { window.open(`https://discord.com/channels/@me`, "_blank"); copyLink(); }}
+            className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white"
+          >
+            <span>💬</span>
+            <span>Share on Discord (link copied)</span>
+          </button>
+          <button
+            onClick={() => { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank"); playSound("click"); }}
+            className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white"
+          >
+            <span>💼</span>
+            <span>Share on LinkedIn</span>
+          </button>
+          <button
+            onClick={() => { window.open(`mailto:?subject=${encodeURIComponent("Check out WSBoot!")}&body=${encodeURIComponent("Hey! Check out this Windows 98 desktop in your browser:\n\n" + shareUrl)}`, "_self"); playSound("click"); }}
+            className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white"
+          >
+            <span>📧</span>
+            <span>Send via Email (Gmail, etc.)</span>
           </button>
           <button
             onClick={copyLink}
