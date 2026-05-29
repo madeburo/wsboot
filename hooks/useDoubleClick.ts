@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 export function useDoubleClick<T>(single: (value: T) => void, double: (value: T) => void, delay = 240) {
   const clickTimer = useRef<number | null>(null);
 
-  // Clean up pending timeout on unmount
   useEffect(() => {
     return () => {
       if (clickTimer.current) {

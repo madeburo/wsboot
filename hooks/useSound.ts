@@ -12,14 +12,15 @@ export function useSound() {
 
   useEffect(() => {
     const enable = () => setEnabled(true);
+    const timers = fadeTimers.current;
     window.addEventListener("pointerdown", enable, { once: true });
     window.addEventListener("keydown", enable, { once: true });
     return () => {
       window.removeEventListener("pointerdown", enable);
       window.removeEventListener("keydown", enable);
-      // Clean up any running fade intervals
-      fadeTimers.current.forEach((timer) => clearInterval(timer));
-      fadeTimers.current.clear();
+
+      timers.forEach((timer) => clearInterval(timer));
+      timers.clear();
     };
   }, []);
 

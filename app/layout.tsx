@@ -1,5 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import { Pixelify_Sans } from "next/font/google";
 import "./globals.css";
+
+const pixelifySans = Pixelify_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-pixelify",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.wsboot.com"),
@@ -53,9 +61,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
-        height: 630,
+        height: 680,
         alt: "WSBoot - Windows 98 Retro Web Desktop with classic apps and games",
       },
     ],
@@ -68,9 +76,9 @@ export const metadata: Metadata = {
       "Play Doom, Minesweeper, Solitaire. Use Winamp, Paint, Norton Commander — a fully interactive Windows 98 desktop in your browser.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
-        height: 630,
+        height: 680,
         alt: "WSBoot - Windows 98 Retro Web Desktop",
       },
     ],
@@ -118,13 +126,8 @@ const jsonLd = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={pixelifySans.variable}>
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-          crossOrigin="anonymous"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

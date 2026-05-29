@@ -193,6 +193,7 @@ export function NetscapeWindow({ playSound }: WindowComponentProps) {
           src={currentUrl}
           className="w-full h-full border-0"
           sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+          referrerPolicy="no-referrer"
           onLoad={() => {
             setLoading(false);
             setStatusText("Document: Done");

@@ -3,6 +3,44 @@
 import { useCallback, useEffect, useState } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
+function CalcButton({
+  label,
+  onClick,
+  color = "#000080",
+}: {
+  label: string;
+  onClick: () => void;
+  color?: string;
+}) {
+  const [pressed, setPressed] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
+      className="flex items-center justify-center cursor-default select-none"
+      style={{
+        background: "#c0c0c0",
+        border: "2px solid",
+        borderColor: pressed
+          ? "#808080 #ffffff #ffffff #808080"
+          : "#ffffff #808080 #808080 #ffffff",
+        boxShadow: pressed
+          ? "inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #dfdfdf"
+          : "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
+        color,
+        fontSize: "13px",
+        height: "28px",
+        paddingTop: pressed ? "1px" : "0px",
+        paddingLeft: pressed ? "1px" : "0px",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function CalculatorWindow({ playSound }: WindowComponentProps) {
   const [display, setDisplay] = useState("0");
   const [memory, setMemory] = useState(0);
@@ -132,7 +170,6 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
     setResetNext(true);
   }, [current, playSound]);
 
-  // Keyboard support
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key >= "0" && e.key <= "9") inputDigit(e.key);
@@ -145,45 +182,6 @@ export function CalculatorWindow({ playSound }: WindowComponentProps) {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [inputDigit, inputDot, handleOperator, handleEquals, clear, backspace]);
-
-  // Win98 style button
-  const CalcButton = ({
-    label,
-    onClick,
-    color = "#000080",
-  }: {
-    label: string;
-    onClick: () => void;
-    color?: string;
-  }) => {
-    const [pressed, setPressed] = useState(false);
-    return (
-      <button
-        onClick={onClick}
-        onPointerDown={() => setPressed(true)}
-        onPointerUp={() => setPressed(false)}
-        onPointerLeave={() => setPressed(false)}
-        className="flex items-center justify-center cursor-default select-none"
-        style={{
-          background: "#c0c0c0",
-          border: "2px solid",
-          borderColor: pressed
-            ? "#808080 #ffffff #ffffff #808080"
-            : "#ffffff #808080 #808080 #ffffff",
-          boxShadow: pressed
-            ? "inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #dfdfdf"
-            : "inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a",
-          color,
-          fontSize: "13px",
-          height: "28px",
-          paddingTop: pressed ? "1px" : "0px",
-          paddingLeft: pressed ? "1px" : "0px",
-        }}
-      >
-        {label}
-      </button>
-    );
-  };
 
   return (
     <div className="flex flex-col h-full bg-[#c0c0c0]">

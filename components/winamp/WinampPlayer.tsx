@@ -16,6 +16,8 @@ const DEFAULT_TRACKS: WinampTrack[] = [
   { title: "Alternative", artist: "Winamp", duration: 0, file: "/winamp/winamp-alternative.mp3" },
 ];
 
+const IDLE_BARS = Array(19).fill(2);
+
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
@@ -45,7 +47,7 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
   const [eqBands, setEqBands] = useState<number[]>([50, 50, 50, 50, 50, 50, 50, 50, 50, 50]);
   const [preamp, setPreamp] = useState(50);
   const [marqueeOffset, setMarqueeOffset] = useState(0);
-  const [visBars, setVisBars] = useState<number[]>(Array(19).fill(2));
+  const [visBars, setVisBars] = useState<number[]>(IDLE_BARS);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -69,8 +71,10 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
   // Visualizer animation
   useEffect(() => {
     if (!playing) {
-      setVisBars(Array(19).fill(2));
-      return;
+      // Reset bars on the next frame rather than synchronously during the
+      // effect to avoid cascading renders.
+      const reset = requestAnimationFrame(() => setVisBars(IDLE_BARS));
+      return () => cancelAnimationFrame(reset);
     }
 
     // If we have an analyser, use real data
@@ -100,36 +104,34 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
     return () => window.clearInterval(timer);
   }, [playing]);
 
-  // Audio playback
-  const setupAudio = useCallback(() => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-      audioRef.current.addEventListener("ended", () => {
-        nextTrackRef.current();
-      });
-      audioRef.current.addEventListener("timeupdate", () => {
-        if (audioRef.current) {
-          setElapsed(Math.floor(audioRef.current.currentTime));
-        }
-      });
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        if (audioRef.current && audioRef.current.duration && isFinite(audioRef.current.duration)) {
-          setDuration(Math.floor(audioRef.current.duration));
+  // Audio playback — create the element once on mount and wire up listeners
+  // that don't depend on changing state.
+  useEffect(() => {
+    const audio = new Audio();
+    audioRef.current = audio;
 
-          setTracks((prev) => {
-            const updated = [...prev];
-            const idx = prev.findIndex((t) => t.file && audioRef.current?.src.endsWith(t.file));
-            if (idx >= 0) {
-              updated[idx] = { ...updated[idx], duration: Math.floor(audioRef.current!.duration) };
-            }
-            return updated;
-          });
-        }
-      });
-    }
+    const onTimeUpdate = () => setElapsed(Math.floor(audio.currentTime));
+    const onLoadedMetadata = () => {
+      if (audio.duration && isFinite(audio.duration)) {
+        setDuration(Math.floor(audio.duration));
+        setTracks((prev) => {
+          const idx = prev.findIndex((t) => t.file && audio.src.endsWith(t.file));
+          if (idx < 0) return prev;
+          const updated = [...prev];
+          updated[idx] = { ...updated[idx], duration: Math.floor(audio.duration) };
+          return updated;
+        });
+      }
+    };
+
+    audio.addEventListener("timeupdate", onTimeUpdate);
+    audio.addEventListener("loadedmetadata", onLoadedMetadata);
+    return () => {
+      audio.pause();
+      audio.removeEventListener("timeupdate", onTimeUpdate);
+      audio.removeEventListener("loadedmetadata", onLoadedMetadata);
+    };
   }, []);
-
-  const nextTrackRef = useRef(() => {});
 
   const nextTrack = useCallback(() => {
     if (shuffle) {
@@ -145,14 +147,22 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
     setElapsed(0);
   }, [shuffle, repeat, currentTrack, tracks.length]);
 
-  nextTrackRef.current = nextTrack;
+  // Re-bind the "ended" handler whenever nextTrack changes so it always
+  // advances using the latest shuffle/repeat/track state.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onEnded = () => nextTrack();
+    audio.addEventListener("ended", onEnded);
+    return () => audio.removeEventListener("ended", onEnded);
+  }, [nextTrack]);
 
   useEffect(() => {
     if (playing && (!audioRef.current || audioRef.current.paused)) {
       intervalRef.current = window.setInterval(() => {
         setElapsed((prev) => {
           if (prev >= trackDuration && trackDuration > 0) {
-            nextTrackRef.current();
+            nextTrack();
             return 0;
           }
           return prev + 1;
@@ -168,7 +178,7 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
         intervalRef.current = null;
       }
     };
-  }, [playing, currentTrack, trackDuration]);
+  }, [playing, currentTrack, trackDuration, nextTrack]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -191,7 +201,6 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
     setPlaying(true);
 
     if (track.file) {
-      setupAudio();
       if (audioRef.current) {
         if (audioRef.current.src !== window.location.origin + track.file) {
           audioRef.current.src = track.file;
@@ -247,7 +256,6 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
     setPlaying(true);
 
     if (tracks[index].file) {
-      setupAudio();
       if (audioRef.current) {
         audioRef.current.src = tracks[index].file!;
         audioRef.current.play().catch(() => {});
@@ -372,7 +380,7 @@ export function WinampPlayer({ playSound }: { playSound: (name: string) => void 
           <button className="winamp-transport-btn" onClick={handleStop} aria-label="Stop">
             <TransportStop />
           </button>
-          <button className="winamp-transport-btn" onClick={() => { nextTrackRef.current(); }} aria-label="Next">
+          <button className="winamp-transport-btn" onClick={() => { nextTrack(); }} aria-label="Next">
             <TransportNext />
           </button>
           <button className="winamp-transport-btn winamp-eject-btn" aria-label="Eject">

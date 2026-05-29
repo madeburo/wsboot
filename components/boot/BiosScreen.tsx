@@ -68,29 +68,17 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     [onComplete],
   );
 
-  // BIOS text animation — fast reveal
   useEffect(() => {
     if (phase !== "bios") return;
     const interval = setInterval(() => {
       setVisibleLines((v) => {
-        const next = v + 1;
-        if (next >= BIOS_LINES.length) {
-          clearInterval(interval);
-          // Auto-boot after short delay if F8 wasn't pressed
-          if (!f8Pressed) {
-            setTimeout(() => {
-              setPhase("booting");
-              setTimeout(() => complete("normal"), 400);
-            }, 500);
-          }
-        }
-        return Math.min(next, BIOS_LINES.length);
+        if (v + 1 >= BIOS_LINES.length) clearInterval(interval);
+        return Math.min(v + 1, BIOS_LINES.length);
       });
     }, 80);
     return () => clearInterval(interval);
-  }, [phase, f8Pressed, complete]);
+  }, [phase]);
 
-  // Listen for F8 or Escape during BIOS phase
   useEffect(() => {
     if (phase !== "bios") return;
     const handler = (e: KeyboardEvent) => {
@@ -103,14 +91,23 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [phase]);
 
-  // When BIOS finishes and F8 was pressed, show menu
+  // Decide what happens once all BIOS lines have been printed. Keeping this in a
+  // single effect (rather than spread across the typing interval) avoids a
+  // synchronous setState-in-effect and lets the cleanup cancel the pending
+  // auto-boot timer if F8/ESC is pressed during the countdown.
   useEffect(() => {
-    if (phase === "bios" && f8Pressed && visibleLines >= BIOS_LINES.length) {
-      setPhase("menu");
+    if (phase !== "bios" || visibleLines < BIOS_LINES.length) return;
+    if (f8Pressed) {
+      const toMenu = setTimeout(() => setPhase("menu"), 300);
+      return () => clearTimeout(toMenu);
     }
-  }, [phase, f8Pressed, visibleLines]);
+    const toBoot = setTimeout(() => {
+      setPhase("booting");
+      setTimeout(() => complete("normal"), 400);
+    }, 500);
+    return () => clearTimeout(toBoot);
+  }, [phase, visibleLines, f8Pressed, complete]);
 
-  // Menu key handler
   useEffect(() => {
     if (phase !== "menu") return;
     const handler = (e: KeyboardEvent) => {
@@ -134,7 +131,6 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [phase, complete]);
 
-  // Bootlog animation
   useEffect(() => {
     if (phase !== "bootlog") return;
     const interval = setInterval(() => {
@@ -151,7 +147,6 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     return () => clearInterval(interval);
   }, [phase, complete]);
 
-  // Command prompt — press Enter to boot
   useEffect(() => {
     if (phase !== "command") return;
     const handler = (e: KeyboardEvent) => {
@@ -163,7 +158,6 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [phase, complete]);
 
-  // Auto-scroll
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
@@ -174,7 +168,7 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
     <div
       ref={containerRef}
       onClick={() => {
-        // Click during BIOS also triggers boot if done
+
         if (phase === "bios" && visibleLines >= BIOS_LINES.length && !f8Pressed) {
           setPhase("booting");
           setTimeout(() => complete("normal"), 200);
@@ -182,7 +176,7 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
       }}
       className="flex h-screen w-screen flex-col items-start overflow-hidden bg-black p-4 font-mono text-[14px] leading-[20px] text-[#aaaaaa] cursor-default"
     >
-      {/* BIOS lines */}
+
       {BIOS_LINES.slice(0, visibleLines).map((line, i) => (
         <div
           key={i}
@@ -196,12 +190,10 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
         </div>
       ))}
 
-      {/* Cursor during BIOS */}
       {phase === "bios" && visibleLines < BIOS_LINES.length && (
         <span className="inline-block w-[8px] h-[14px] bg-[#aaaaaa] animate-pulse" />
       )}
 
-      {/* F8 Boot Menu */}
       {phase === "menu" && (
         <div className="mt-4">
           <div className="text-white font-bold mb-2">WSBoot 98 Startup Menu</div>
@@ -222,7 +214,6 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
         </div>
       )}
 
-      {/* Bootlog output */}
       {phase === "bootlog" && (
         <div className="mt-2">
           {BOOTLOG_LINES.slice(0, bootlogVisible).map((line, i) => (
@@ -233,7 +224,6 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
         </div>
       )}
 
-      {/* Command prompt */}
       {phase === "command" && (
         <div className="mt-4">
           <div className="text-white">Microsoft(R) WS-DOS</div>
@@ -246,7 +236,6 @@ export function BiosScreen({ onComplete }: BiosScreenProps) {
         </div>
       )}
 
-      {/* Booting message */}
       {phase === "booting" && (
         <div className="mt-2 text-white animate-pulse">Loading WSBoot 98...</div>
       )}

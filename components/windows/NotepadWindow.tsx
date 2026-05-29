@@ -3,101 +3,142 @@
 import { useState, useRef, useCallback } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
+type MenuActionId =
+  | "new"
+  | "save"
+  | "exit"
+  | "undo"
+  | "cut"
+  | "copy"
+  | "paste"
+  | "selectAll"
+  | "timeDate"
+  | "find"
+  | "about"
+  | "wordWrap";
+
+type MenuItem = { label: string; action: MenuActionId; disabled?: boolean };
+
+// Static menu structure — labels and action ids only. No closures or refs flow
+// through here, so it is safe to map over during render.
+const MENU_ITEMS: Record<string, MenuItem[]> = {
+  File: [
+    { label: "New", action: "new" },
+    { label: "Save", action: "save" },
+    { label: "Exit", action: "exit" },
+  ],
+  Edit: [
+    { label: "Undo", action: "undo", disabled: true },
+    { label: "Cut", action: "cut" },
+    { label: "Copy", action: "copy" },
+    { label: "Paste", action: "paste" },
+    { label: "Select All", action: "selectAll" },
+    { label: "Time/Date", action: "timeDate" },
+  ],
+  Search: [{ label: "Find...", action: "find" }],
+  Format: [{ label: "Word Wrap", action: "wordWrap" }],
+  Help: [{ label: "About Notepad", action: "about" }],
+};
+
 export function NotepadWindow({ window: win, closeWindow, notify, playSound }: WindowComponentProps) {
   const [text, setText] = useState("");
-  const [fileName, setFileName] = useState("Untitled");
   const [wordWrap, setWordWrap] = useState(true);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleNew = useCallback(() => {
-    if (text && !globalThis.window.confirm("Do you want to save changes?")) return;
-    setText("");
-    setFileName("Untitled");
-    playSound("click");
-  }, [text, playSound]);
-
-  const handleSelectAll = useCallback(() => {
-    textareaRef.current?.select();
-    playSound("click");
-  }, [playSound]);
-
-  const handleCopy = useCallback(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    const selected = text.substring(textarea.selectionStart, textarea.selectionEnd);
-    if (selected) {
-      navigator.clipboard.writeText(selected).catch(() => {});
-      notify("Copied to clipboard.");
-    }
-    playSound("click");
-  }, [text, notify, playSound]);
-
-  const handlePaste = useCallback(async () => {
-    try {
-      const clipText = await navigator.clipboard.readText();
+  const runAction = useCallback(
+    (action: MenuActionId) => {
       const textarea = textareaRef.current;
-      if (!textarea) return;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const newText = text.substring(0, start) + clipText + text.substring(end);
-      setText(newText);
-      playSound("click");
-    } catch {
-      notify("Cannot paste from clipboard.");
-    }
-  }, [text, notify, playSound]);
-
-  const handleCut = useCallback(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    const selected = text.substring(textarea.selectionStart, textarea.selectionEnd);
-    if (selected) {
-      navigator.clipboard.writeText(selected).catch(() => {});
-      const newText = text.substring(0, textarea.selectionStart) + text.substring(textarea.selectionEnd);
-      setText(newText);
-    }
-    playSound("click");
-  }, [text, playSound]);
-
-  const handleTimeDate = useCallback(() => {
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString() + " " + now.toLocaleDateString();
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    const start = textarea.selectionStart;
-    const newText = text.substring(0, start) + timeStr + text.substring(start);
-    setText(newText);
-    playSound("click");
-  }, [text, playSound]);
-
-  const menuItems: Record<string, { label: string; action: () => void; disabled?: boolean }[]> = {
-    File: [
-      { label: "New", action: handleNew },
-      { label: "Save", action: () => { notify("Save is not available in browser."); playSound("error"); } },
-      { label: "Exit", action: () => closeWindow(win.instanceId) },
-    ],
-    Edit: [
-      { label: "Undo", action: () => { playSound("error"); }, disabled: true },
-      { label: "Cut", action: handleCut },
-      { label: "Copy", action: handleCopy },
-      { label: "Paste", action: handlePaste },
-      { label: "Select All", action: handleSelectAll },
-      { label: "Time/Date", action: handleTimeDate },
-    ],
-    Search: [
-      { label: "Find...", action: () => { notify("Find is not implemented yet."); playSound("error"); } },
-    ],
-    Help: [
-      { label: "About Notepad", action: () => { notify("Notepad for WSBoot. A simple text editor."); playSound("click"); } },
-    ],
-  };
+      switch (action) {
+        case "new": {
+          if (text && !globalThis.window.confirm("Do you want to save changes?")) return;
+          setText("");
+          playSound("click");
+          break;
+        }
+        case "save": {
+          notify("Save is not available in browser.");
+          playSound("error");
+          break;
+        }
+        case "exit": {
+          closeWindow(win.instanceId);
+          break;
+        }
+        case "undo": {
+          playSound("error");
+          break;
+        }
+        case "cut": {
+          if (!textarea) return;
+          const selected = text.substring(textarea.selectionStart, textarea.selectionEnd);
+          if (selected) {
+            navigator.clipboard.writeText(selected).catch(() => {});
+            setText(text.substring(0, textarea.selectionStart) + text.substring(textarea.selectionEnd));
+          }
+          playSound("click");
+          break;
+        }
+        case "copy": {
+          if (!textarea) return;
+          const selected = text.substring(textarea.selectionStart, textarea.selectionEnd);
+          if (selected) {
+            navigator.clipboard.writeText(selected).catch(() => {});
+            notify("Copied to clipboard.");
+          }
+          playSound("click");
+          break;
+        }
+        case "paste": {
+          if (!textarea) return;
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          navigator.clipboard
+            .readText()
+            .then((clipText) => setText(text.substring(0, start) + clipText + text.substring(end)))
+            .catch(() => notify("Cannot paste from clipboard."));
+          playSound("click");
+          break;
+        }
+        case "selectAll": {
+          textarea?.select();
+          playSound("click");
+          break;
+        }
+        case "timeDate": {
+          if (!textarea) return;
+          const now = new Date();
+          const stamp = `${now.toLocaleTimeString()} ${now.toLocaleDateString()}`;
+          const at = textarea.selectionStart;
+          setText(text.substring(0, at) + stamp + text.substring(at));
+          playSound("click");
+          break;
+        }
+        case "find": {
+          notify("Find is not implemented yet.");
+          playSound("error");
+          break;
+        }
+        case "about": {
+          notify("Notepad for WSBoot. A simple text editor.");
+          playSound("click");
+          break;
+        }
+        case "wordWrap": {
+          setWordWrap((value) => !value);
+          playSound("click");
+          break;
+        }
+      }
+    },
+    [text, notify, playSound, closeWindow, win.instanceId],
+  );
 
   return (
     <div className="flex h-full flex-col" onClick={() => setOpenMenu(null)}>
       {/* Menu bar */}
       <div className="window-menu-bar">
-        {Object.keys(menuItems).map((menu) => (
+        {Object.keys(MENU_ITEMS).map((menu) => (
           <div key={menu} className="relative" style={{ display: "inline-block" }}>
             <button
               className="window-menu-item"
@@ -117,17 +158,18 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
                 style={{ display: "flex", flexDirection: "column" }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {menuItems[menu].map((item, i) => (
+                {MENU_ITEMS[menu].map((item) => (
                   <button
-                    key={i}
+                    key={item.action}
                     className="menu-command"
                     disabled={item.disabled}
                     aria-disabled={item.disabled}
                     onClick={() => {
-                      item.action();
+                      runAction(item.action);
                       setOpenMenu(null);
                     }}
                   >
+                    {item.action === "wordWrap" && (wordWrap ? "✓ " : "  ")}
                     {item.label}
                   </button>
                 ))}
@@ -135,40 +177,6 @@ export function NotepadWindow({ window: win, closeWindow, notify, playSound }: W
             )}
           </div>
         ))}
-
-        {/* Word Wrap toggle in Format-like position */}
-        <div className="relative" style={{ display: "inline-block" }}>
-          <button
-            className="window-menu-item"
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpenMenu(openMenu === "Format" ? null : "Format");
-            }}
-            onMouseEnter={() => {
-              if (openMenu) setOpenMenu("Format");
-            }}
-          >
-            Format
-          </button>
-          {openMenu === "Format" && (
-            <div
-              className="absolute left-0 top-full z-50 min-w-[160px] border border-[#808080] bg-[#c0c0c0] py-[2px] shadow-md"
-              style={{ display: "flex", flexDirection: "column" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="menu-command"
-                onClick={() => {
-                  setWordWrap(!wordWrap);
-                  setOpenMenu(null);
-                  playSound("click");
-                }}
-              >
-                {wordWrap ? "✓ " : "  "}Word Wrap
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Text area */}

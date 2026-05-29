@@ -3,9 +3,8 @@
 import { useRef, useState, useCallback } from "react";
 import type { WindowComponentProps } from "@/lib/windows";
 
-export function MediaPlayerWindow({ window: win, playSound }: WindowComponentProps) {
+export function MediaPlayerWindow({ window: win }: WindowComponentProps) {
   const hasVideo = !!win.payload;
-  const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -26,9 +25,7 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
     if (!video) return;
     video.muted = false;
     setMuted(false);
-    video.play().then(() => {
-      setPlaying(true);
-    }).catch(() => {
+    video.play().catch(() => {
       // If unmuted play fails, switch to YouTube embed
       setUseEmbed(true);
     });
@@ -38,7 +35,6 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
     const video = videoRef.current;
     if (!video) return;
     video.pause();
-    setPlaying(false);
   }, []);
 
   const stop = useCallback(() => {
@@ -46,7 +42,6 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
     if (!video) return;
     video.pause();
     video.currentTime = 0;
-    setPlaying(false);
     setProgress(0);
     setCurrentTime(0);
   }, []);
@@ -120,18 +115,14 @@ export function MediaPlayerWindow({ window: win, playSound }: WindowComponentPro
                   }
                 }}
                 onTimeUpdate={handleTimeUpdate}
-                onEnded={() => setPlaying(false)}
                 onCanPlay={() => {
                   if (videoRef.current) {
                     setDuration(videoRef.current.duration);
-                    setPlaying(true);
                   }
                 }}
                 onLoadedMetadata={() => {
                   if (videoRef.current) setDuration(videoRef.current.duration);
                 }}
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
                 onError={handleVideoError}
                 onStalled={() => {
                   setTimeout(() => {

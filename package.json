@@ -1,8 +1,11 @@
 {
   "name": "wsboot",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "private": true,
   "description": "A retro web desktop booting in browser.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

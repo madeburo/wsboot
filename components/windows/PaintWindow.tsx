@@ -43,17 +43,6 @@ export function PaintWindow() {
   const undoStack = useRef<ImageData[]>([]);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
 
-  // Initialize canvas with white background
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    saveUndo();
-  }, []);
-
   const saveUndo = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -63,6 +52,17 @@ export function PaintWindow() {
     undoStack.current.push(data);
     if (undoStack.current.length > 30) undoStack.current.shift();
   }, []);
+
+  // Initialize canvas with white background
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    saveUndo();
+  }, [saveUndo]);
 
   const undo = useCallback(() => {
     const canvas = canvasRef.current;
@@ -167,6 +167,18 @@ export function PaintWindow() {
     ctx.putImageData(imageData, 0, 0);
   }, []);
 
+  const sprayAt = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    ctx.fillStyle = color;
+    const radius = brushSize * 4;
+    for (let i = 0; i < 20; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * radius;
+      const px = Math.floor(x + Math.cos(angle) * dist);
+      const py = Math.floor(y + Math.sin(angle) * dist);
+      ctx.fillRect(px, py, 1, 1);
+    }
+  }, [color, brushSize]);
+
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const pos = getCanvasPos(e);
     const canvas = canvasRef.current;
@@ -207,19 +219,7 @@ export function PaintWindow() {
     } else if (tool === "line" || tool === "rect" || tool === "filledRect" || tool === "ellipse" || tool === "filledEllipse") {
       saveUndo();
     }
-  }, [tool, color, bgColor, brushSize, getCanvasPos, saveUndo, floodFill]);
-
-  const sprayAt = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    ctx.fillStyle = color;
-    const radius = brushSize * 4;
-    for (let i = 0; i < 20; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = Math.random() * radius;
-      const px = Math.floor(x + Math.cos(angle) * dist);
-      const py = Math.floor(y + Math.sin(angle) * dist);
-      ctx.fillRect(px, py, 1, 1);
-    }
-  }, [color, brushSize]);
+  }, [tool, color, bgColor, brushSize, getCanvasPos, saveUndo, floodFill, sprayAt]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const pos = getCanvasPos(e);
@@ -299,11 +299,10 @@ export function PaintWindow() {
     }
   }, [drawing, tool, color, bgColor, brushSize, getCanvasPos, startPos, drawLine, sprayAt]);
 
-  const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseUp = useCallback(() => {
     if (!drawing) return;
     setDrawing(false);
 
-    const pos = getCanvasPos(e);
     const canvas = canvasRef.current;
     const overlay = overlayRef.current;
     if (!canvas || !overlay) return;
@@ -319,7 +318,7 @@ export function PaintWindow() {
 
     lastPos.current = null;
     setStartPos(null);
-  }, [drawing, tool, startPos, getCanvasPos]);
+  }, [drawing, tool, startPos]);
 
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -394,7 +393,7 @@ export function PaintWindow() {
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
-              onMouseLeave={() => { if (drawing) handleMouseUp({} as React.MouseEvent<HTMLCanvasElement>); }}
+              onMouseLeave={() => { if (drawing) handleMouseUp(); }}
               onContextMenu={handleContextMenu}
             />
             <canvas
