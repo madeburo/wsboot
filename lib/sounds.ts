@@ -11,6 +11,7 @@ export const soundFiles: Record<string, string> = {
   "dialup-01": "/sounds/dialup-modem-01.mp3",
   "dialup-02": "/sounds/dialup-modem-02.mp3",
   "dialup-03": "/sounds/dialup-modem-03.mp3",
+  floppy: "/sounds/floppy.mp3",
 };
 
 export const toneMap: Record<string, [number, number, OscillatorType]> = {

@@ -80,7 +80,7 @@ export const windowDefinitions: Record<WindowId, WindowDefinition> = {
   screensaver: { id: "screensaver", title: "Screensaver", icon: "monitor", width: 460, height: 330 },
   run: { id: "run", title: "Run", icon: "run", width: 420, height: 210 },
   settings: { id: "settings", title: "Settings", icon: "settings", width: 520, height: 380 },
-  share: { id: "share", title: "Send to a Friend", icon: "share", width: 420, height: 520 },
+  share: { id: "share", title: "Send to a Friend", icon: "share", width: 400, height: 555 },
   "project-details": {
     id: "project-details",
     title: "Project Details",

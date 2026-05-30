@@ -119,7 +119,7 @@ export function ComputerWindow({ notify, playSound }: WindowComponentProps) {
                   playSound("click");
                 }}
                 onDoubleClick={() => {
-                  playSound("open");
+                  playSound(item.id === "floppy" ? "floppy" : "open");
                   notify(`${item.label}: ${item.description}`);
                 }}
               >
