@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { WindowComponentProps } from "@/lib/windows";
+import { commands, isUrl } from "@/lib/commands";
+import type { WindowComponentProps, WindowId } from "@/lib/windows";
 
 type Line = { text: string; type: "output" | "input" };
 
@@ -17,6 +18,8 @@ const HELP_TEXT = [
   "  echo      - Display message",
   "  type      - Display file contents",
   "  color     - Change text color",
+  "  start     - Open a program or URL",
+  "             (e.g. start notepad, start google.com)",
   "  exit      - Close MS-DOS Prompt",
   "",
 ];
@@ -56,7 +59,7 @@ const FILES: Record<string, string[]> = {
   ],
 };
 
-export function MsDosWindow({ window: win, closeWindow, playSound }: WindowComponentProps) {
+export function MsDosWindow({ window: win, closeWindow, openWindow, playSound }: WindowComponentProps) {
   const [lines, setLines] = useState<Line[]>([
     { text: "Microsoft(R) Windows 98", type: "output" },
     { text: "   (C)Copyright Microsoft Corp 1981-1999.", type: "output" },
@@ -130,6 +133,28 @@ export function MsDosWindow({ window: win, closeWindow, playSound }: WindowCompo
           setTextColor(colors[code] ?? "#c0c0c0");
           break;
         }
+        case "start": {
+          if (!args) {
+            addOutput(["Usage: start <program|url>", ""]);
+            break;
+          }
+          // URL → open in browser
+          if (isUrl(args)) {
+            addOutput([`Starting ${args}...`, ""]);
+            openWindow("ie-browser", args);
+            break;
+          }
+          // Program name
+          const prog = commands[args.toLowerCase()];
+          if (prog && prog !== "help") {
+            addOutput([`Starting ${args}...`, ""]);
+            openWindow(prog as WindowId);
+          } else {
+            addOutput([`Bad command or file name - ${args}`, ""]);
+            playSound("error");
+          }
+          break;
+        }
         case "exit":
           closeWindow(win.instanceId);
           break;
@@ -139,7 +164,7 @@ export function MsDosWindow({ window: win, closeWindow, playSound }: WindowCompo
           break;
       }
     },
-    [addOutput, closeWindow, playSound, win.instanceId],
+    [addOutput, closeWindow, openWindow, playSound, win.instanceId],
   );
 
   const handleSubmit = (e: React.FormEvent) => {

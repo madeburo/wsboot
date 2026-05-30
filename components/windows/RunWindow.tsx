@@ -1,21 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { commands } from "@/lib/commands";
+import { commands, isUrl } from "@/lib/commands";
 import type { WindowComponentProps, WindowId } from "@/lib/windows";
 
 export function RunWindow({ window, openWindow, closeWindow, notify, playSound }: WindowComponentProps) {
   const [value, setValue] = useState("");
 
   const run = () => {
-    const command = commands[value.trim().toLowerCase()];
+    const trimmed = value.trim();
+    if (!trimmed) {
+      playSound("error");
+      notify("Please enter a command or URL.");
+      return;
+    }
+
+    // URL → open in IE browser via archive.org
+    if (isUrl(trimmed)) {
+      openWindow("ie-browser", trimmed);
+      closeWindow(window.instanceId);
+      return;
+    }
+
+    const command = commands[trimmed.toLowerCase()];
     if (!command) {
       playSound("error");
-      notify(`Unknown command: ${value || "(empty)"}`);
+      notify(`Cannot find '${trimmed}'. Make sure you typed the name correctly.`);
       return;
     }
     if (command === "help") {
-      notify("Commands: about, projects, contact, games, music, screensaver, help");
+      notify("Commands: about, computer, winamp, ie, netscape, notepad, paint, calc, cmd, doom, pinball, projects, games, music, screensaver, defrag, help");
       return;
     }
     openWindow(command as WindowId);
@@ -32,7 +46,7 @@ export function RunWindow({ window, openWindow, closeWindow, notify, playSound }
     >
       <div className="flex gap-3">
         <div className="text-3xl">▣</div>
-        <p>Type the name of a program, folder, document, or internet resource, and WSBoot will open it.</p>
+        <p>Type the name of a program, folder, document, or internet resource, and WSBoot will open it for you.</p>
       </div>
       <label className="grid grid-cols-[52px_1fr] items-center gap-2">
         <span>Open:</span>

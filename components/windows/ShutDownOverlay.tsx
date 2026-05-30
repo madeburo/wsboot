@@ -21,10 +21,21 @@ const shareLinks = [
     icon: "✈️",
     href: `https://t.me/share/url?url=${encodeURIComponent(SHARE_URL)}&text=${encodeURIComponent(SHARE_TEXT)}`,
   },
+    {
+    label: "WhatsApp",
+    icon: "💚",
+    href: `https://wa.me/?text=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}`,
+  },
+  {
+    label: "Threads",
+    icon: "🧵",
+    href: `https://www.threads.net/intent/post?text=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}`,
+  },
   {
     label: "Discord",
     icon: "💬",
     href: `https://discord.com/channels/@me`,
+    copyOnClick: true,
   },
   {
     label: "LinkedIn",
@@ -84,7 +95,7 @@ export function ShutDownOverlay({ safe, onRestart, onShutdown, onCancel }: { saf
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e]/80 border border-[#444] rounded hover:bg-[#2a2a4e] hover:border-[#ffb000] transition-colors text-[12px] text-[#d0d0d0] hover:text-[#ffb000]"
                 style={{ fontFamily: "var(--font-shutdown)" }}
                 onClick={() => {
-                  if (link.label === "Discord") {
+                  if (link.label === "Discord" || link.copyOnClick) {
                     navigator.clipboard.writeText(SHARE_URL).catch(() => {});
                   }
                 }}

@@ -35,10 +35,11 @@ function getDisplayUrl(url: string): string {
   return url;
 }
 
-export function IEBrowserWindow({ playSound }: WindowComponentProps) {
-  const [address, setAddress] = useState(HOME_URL);
-  const [currentUrl, setCurrentUrl] = useState(toWaybackUrl(HOME_URL));
-  const [history, setHistory] = useState<string[]>([toWaybackUrl(HOME_URL)]);
+export function IEBrowserWindow({ playSound, window: win }: WindowComponentProps) {
+  const initialUrl = win.payload && win.payload.trim() ? win.payload.trim() : HOME_URL;
+  const [address, setAddress] = useState(initialUrl);
+  const [currentUrl, setCurrentUrl] = useState(toWaybackUrl(initialUrl));
+  const [history, setHistory] = useState<string[]>([toWaybackUrl(initialUrl)]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [statusText, setStatusText] = useState("Opening page...");

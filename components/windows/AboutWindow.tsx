@@ -22,11 +22,11 @@ export function AboutWindow({ window, closeWindow, notify }: WindowComponentProp
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <WSBootIcon type="computer" size={28} />
-            <div className="font-bold">Welcome to wsboot</div>
+            <div className="font-bold">Welcome to WSBoot</div>
           </div>
           <section>
             <h3 className="font-bold">Who am I</h3>
-            <p>My first computer was a Windows 98 machine with an Intel Celeron. WSBoot is a small tribute to that era: BIOS screens, pixel icons, slow boot times, old games, and the feeling that every folder could hide something interesting.</p>
+            <p>My first computer was a Windows 98 machine with an Intel Celeron CPU. WSBoot is a small tribute to that era: BIOS screens, pixel icons, slow boot times, old games, and the feeling that every folder could hide something interesting.</p>
           </section>
           <section>
             <h3 className="font-bold">What I build</h3>

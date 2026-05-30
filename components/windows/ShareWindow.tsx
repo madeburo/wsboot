@@ -91,7 +91,7 @@ export function ShareWindow({ window: win, closeWindow, notify, playSound }: Win
             className="flex items-center gap-3 w-full text-left px-2 py-[6px] hover:bg-[#000080] hover:text-white text-[12px]"
           >
             <span className="text-[16px]">🐦</span>
-            <span>Post on X (Twitter)</span>
+            <span>Post on Twiiter (X)</span>
           </button>
           <button
             onClick={() => { window.open(`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent("WSBoot — Windows 98 in your browser")}`, "_blank"); playSound("click"); }}
@@ -108,11 +108,25 @@ export function ShareWindow({ window: win, closeWindow, notify, playSound }: Win
             <span>Send via Telegram</span>
           </button>
           <button
+            onClick={() => { window.open(`https://wa.me/?text=${encodeURIComponent("Check out WSBoot — a Windows 98 desktop in your browser! 💾 " + shareUrl)}`, "_blank"); playSound("click"); }}
+            className="flex items-center gap-3 w-full text-left px-2 py-[6px] hover:bg-[#000080] hover:text-white text-[12px]"
+          >
+            <span className="text-[16px]">💚</span>
+            <span>Share on WhatsApp</span>
+          </button>
+          <button
+            onClick={() => { window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent("Check out WSBoot — a Windows 98 desktop in your browser! 💾 " + shareUrl)}`, "_blank"); playSound("click"); }}
+            className="flex items-center gap-3 w-full text-left px-2 py-[6px] hover:bg-[#000080] hover:text-white text-[12px]"
+          >
+            <span className="text-[16px]">🧵</span>
+            <span>Post on Threads</span>
+          </button>
+          <button
             onClick={() => { window.open(`https://discord.com/channels/@me`, "_blank"); copyLink(); }}
             className="flex items-center gap-3 w-full text-left px-2 py-[6px] hover:bg-[#000080] hover:text-white text-[12px]"
           >
             <span className="text-[16px]">💬</span>
-            <span>Share on Discord (link copied)</span>
+            <span>Share on Discord</span>
           </button>
           <button
             onClick={() => { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank"); playSound("click"); }}
@@ -126,14 +140,14 @@ export function ShareWindow({ window: win, closeWindow, notify, playSound }: Win
             className="flex items-center gap-3 w-full text-left px-2 py-[6px] hover:bg-[#000080] hover:text-white text-[12px]"
           >
             <span className="text-[16px]">📧</span>
-            <span>Send via Email (Gmail, etc.)</span>
+            <span>Send via Email</span>
           </button>
           <button
             onClick={copyLink}
             className="flex items-center gap-3 w-full text-left px-2 py-[6px] hover:bg-[#000080] hover:text-white text-[12px]"
           >
             <span className="text-[16px]">📋</span>
-            <span>Copy link to clipboard</span>
+            <span>Copy link</span>
           </button>
         </div>
       </fieldset>

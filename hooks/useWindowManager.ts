@@ -43,7 +43,9 @@ export function useWindowManager() {
         const viewportHeight = typeof window === "undefined" ? 768 : window.innerHeight;
         const mobile = viewportWidth < 640;
         const width = mobile ? viewportWidth - 16 : Math.min(definition.width, viewportWidth - 32);
-        const height = mobile ? viewportHeight - 40 : Math.min(definition.height, viewportHeight - 42);
+        const height = mobile
+          ? Math.min(definition.height, Math.round(viewportHeight * 0.72))
+          : Math.min(definition.height, viewportHeight - 42);
         return [
           ...items,
           {
